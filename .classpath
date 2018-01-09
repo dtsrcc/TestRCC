@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding ="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="C:/Users/dtsym/Documents/NTBlib/deep_runtime_library_1.4.0_2017-10-31/bin" sourcepath="C:/Users/dtsym/Documents/NTBlib/deep_runtime_library_1.4.0_2017-10-31/src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

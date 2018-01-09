@@ -1,0 +1,5 @@
+board=ntbMpc555HB
+eclipse.preferences.version=1
+libPath=C\:\\Users\\dtsym\\Documents\\NTBlib\\deep_runtime_library_1.4.0_2017-10-31
+os=ntbSTS_ppc
+programmer=ntbMpc555UsbBdi

@@ -27,7 +27,8 @@ public class KnightRider extends Task{
 	private TPU_PWM pwm4;
 	private TPU_PWM pwm5;
 	private TPU_PWM pwm6;
-
+	private TPU_PWM pwm7;
+	private TPU_PWM pwm8;
 
 	
 	public KnightRider() {

@@ -35,7 +35,7 @@ public class WifiDemo extends Task{
 		CmdInt.Type type = wifi.cmd.readCmd();
 		if(type == CmdInt.Type.Cmd){
 			System.out.print("command=");
-			System.out.print(wifi.cmd.getInt());
+			System.out.print(wifi.cmd.getInt());//fglkj
 		}
 		else if(type == CmdInt.Type.Code){
 			System.out.print("code=");

@@ -1,5 +1,3 @@
-#deep-1
-
 meta {
 	version = "Wed Jan 10 10:52:57 CET 2018";
 	description = "deep project file for Testing";
@@ -11,11 +9,8 @@ project Testing {
 	ostype = ntbSTS_ppc;
 	programmertype = ntbMpc555UsbBdi;
 
-#	enter names of rootclasses, e.g.
 #	rootclasses = "KnightRider.KnightRider";
 #	rootclasses = "fadeLED";
 	rootclasses = "DecoderBlub";
 
-#	imgfile = "C:\Users\dtsym\eclipse-workspace\NTB\Testing\Testing.bin";
-#	imgformat = BIN;
 }

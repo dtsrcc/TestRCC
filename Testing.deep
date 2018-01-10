@@ -14,7 +14,7 @@ project Testing {
 #	enter names of rootclasses, e.g.
 #	rootclasses = "KnightRider.KnightRider";
 #	rootclasses = "fadeLED";
-	rootclasses = "DecoderBlubb";
+	rootclasses = "DecoderBlub";
 
 #	imgfile = "C:\Users\dtsym\eclipse-workspace\NTB\Testing\Testing.bin";
 #	imgformat = BIN;

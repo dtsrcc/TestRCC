@@ -51,7 +51,7 @@ public class WifiDemo extends Task{
 			System.out.println();
 			
 			if(task.wifi.connected())
-				task.wifi.cmd.writeCmd(999);
+				task.wifi.cmd.writeCmd(99958);
 		}
 			
 			public static void reset(){

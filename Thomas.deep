@@ -1,0 +1,16 @@
+meta {
+	version = "Wed Jan 10 10:52:57 CET 2018";
+	description = "deep project file for Testing";
+}
+
+project Testing {
+	libpath = "I:\deep\lib";
+	boardtype = ntbMpc555HB;
+	ostype = ntbSTS_ppc;
+	programmertype = ntbMpc555UsbBdi;
+
+#	rootclasses = "KnightRider.KnightRider";
+	rootclasses = "fadeLED";
+#	rootclasses = "DecoderBlub";
+
+}

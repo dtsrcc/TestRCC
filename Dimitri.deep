@@ -4,13 +4,13 @@ meta {
 }
 
 project Testing {
-	libpath = "I:\deep\lib";
+	libpath = "C:\Windows\Sun\deep_runtime_library_1.4.0_2017-10-31";
 	boardtype = ntbMpc555HB;
 	ostype = ntbSTS_ppc;
 	programmertype = ntbMpc555UsbBdi;
 
 #	rootclasses = "KnightRider.KnightRider";
-	rootclasses = "fadeLED";
-#	rootclasses = "DecoderBlub";
+#	rootclasses = "fadeLED";
+	rootclasses = "DecoderBlub";
 
 }

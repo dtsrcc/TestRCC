@@ -4,7 +4,7 @@ import ch.ntb.inf.deep.runtime.ppc32.Task;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI;
 import ch.ntb.inf.deep.runtime.mpc555.driver.TPU_FQD;
 import ch.ntb.inf.deep.runtime.mpc555.driver.TPU_PWM;
-	//hjlkk
+
 public class DecoderBlub extends Task {
 	final byte tpuPin4 = 4;
 	final boolean useTPUA = true;

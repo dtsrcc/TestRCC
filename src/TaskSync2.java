@@ -1,6 +1,7 @@
 import java.io.PrintStream;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI;
 import ch.ntb.inf.deep.runtime.ppc32.Task;
+// task auf counter zugreifen
 
 public class TaskSync2 extends Task{
 	

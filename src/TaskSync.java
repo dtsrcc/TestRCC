@@ -1,5 +1,5 @@
 import ch.ntb.inf.deep.runtime.ppc32.Task;
-
+// taks counter 
 public class TaskSync extends Task{
 
 	public static int counter;

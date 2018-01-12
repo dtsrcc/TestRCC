@@ -6,7 +6,7 @@ import ch.ntb.inf.deep.runtime.ppc32.Task;
 public class TaskSync2 extends Task{
 	
 	public TaskSync2() {
-		Task print = new TaskSync();
+		new TaskSync();
 		period = 2000;
 		Task.install(this);
 		

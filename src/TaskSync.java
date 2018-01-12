@@ -5,8 +5,7 @@ public class TaskSync extends Task{
 	public static int counter;
 	
 	public TaskSync() {
-		Task count = new TaskSync();
-		count.period = 1000;
+		period = 1000;
 		Task.install(this);
 		
 		
@@ -16,9 +15,7 @@ public class TaskSync extends Task{
 		counter++;
 		
 	}
+
 	
-	static {
-		new TaskSync();
-		
-	}
+
 }

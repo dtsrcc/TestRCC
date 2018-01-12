@@ -6,13 +6,13 @@ public class TaskSync2 extends Task{
 	
 	public TaskSync2() {
 		Task print = new TaskSync();
-		print.period = 5000;
+		period = 2000;
 		Task.install(this);
 		
 	}
 	
 	public void action() {
-		// 3) Say hello to the world
+		// 3) print counter
 		System.out.println(TaskSync.counter);
 		
 	}
@@ -25,8 +25,9 @@ public class TaskSync2 extends Task{
 		// 2) Use SCI1 for stdout
 		System.out = new PrintStream(sci1.out);
 		
-		new TaskSync2();
+		System.out.println("start");
 		
-		new TaskSync();
+		new TaskSync2();		
+		
 	}
 }

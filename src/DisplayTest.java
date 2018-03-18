@@ -31,7 +31,7 @@ public class DisplayTest {
 		
 		//DisplayObj.writeChar(Helloidiot);
 		
-		DisplayObj.writeChar('H');
+		//DisplayObj.writeChar('H');
 		
 	}
 	

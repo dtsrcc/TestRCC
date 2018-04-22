@@ -1,8 +1,8 @@
-board=NTB MPC555 header board
+board=none
 eclipse.preferences.version=1
 imgfile=TestSave
 imgformat=TestFormat
-libPath=C\:\\Windows\\Sun\\deep_runtime_library_1.4.0_2017-10-31
-os=NTB Simple Tasking System for PPC
-programmer=NTB MPC555 USB-BDI
+libPath=C\:\\ProgramData\\deep\\trglib
+os=none
+programmer=none
 useDefault=true

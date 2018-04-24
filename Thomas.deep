@@ -4,7 +4,7 @@ meta {
 }
 
 project Testing {
-	libpath = "C:\ProgramData\deep\trglib";
+	libpath = "I:\deep\lib";
 	boardtype = ntbMpc555HB;
 	ostype = ntbSTS_ppc;
 	programmertype = ntbMpc555UsbBdi;

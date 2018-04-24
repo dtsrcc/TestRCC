@@ -5,6 +5,7 @@ import java.io.PrintStream;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI;
 import ch.ntb.inf.deep.runtime.mpc555.driver.TPU_PWM;
 
+
 public class DCMotorDrive {
 	private static DCMotorDrive dm;  // Diese Klasse hat eine Instanz von sich selber
 

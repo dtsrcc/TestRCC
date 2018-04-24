@@ -12,5 +12,6 @@ project Testing {
 #	rootclasses = "KnightRider.KnightRider";
 #	rootclasses = "fadeLED";
 #	rootclasses = "DecoderBlub";
-	rootclasses = "Motors.ServoMotorTilt";
+#	rootclasses = "Motors.ServoMotorTilt";
+	rootclasses = "Motors.DCMotorDrive";
 }

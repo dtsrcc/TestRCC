@@ -8,7 +8,7 @@ public class ServoMotorTilt extends Task {
 	 private final boolean useTPUA = true;
 	 private boolean position = true;
 	
-	 //pwmPeriod in TimeBase Unit (50’000 ns)
+	 //pwmPeriod in TimeBase Unit (50â€™000 ns)
 	 private final int pwmPeriod = 10000000 / TPU_PWM.tpuTimeBase;
 	
 	 public int highTime = 0;
@@ -34,5 +34,5 @@ public class ServoMotorTilt extends Task {
 	 static { // Task Initialisierung
 			 new ServoMotorTilt();
 	 }
-//hallo markus
+
 }

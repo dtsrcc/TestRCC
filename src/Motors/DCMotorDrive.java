@@ -9,8 +9,8 @@ import ch.ntb.inf.deep.runtime.mpc555.driver.TPU_PWM;
 public class DCMotorDrive {
 	private static DCMotorDrive dm;  // Diese Klasse hat eine Instanz von sich selber
 
-	private final boolean useTPUA =true;
-	private final int chnL = 0, chnR = 1;
+	private final boolean useTPUA =false;
+	private final int chnL = 8, chnR = 9;
 	private final static int pwmPeriod = 50000 / TPU_PWM.tpuTimeBase;
 
 	private int currHightimeL, currHightimeR;
@@ -42,7 +42,8 @@ public class DCMotorDrive {
 		dm.update(0, pwmPeriod/2);
 	}*/
 	
-	public static void stop() {
+	public static void stop()
+	{
 		dm.update(0, 0);
 	}
 	
@@ -53,7 +54,7 @@ public class DCMotorDrive {
 	
 	public static void driveReverse(int i)
 	{
-		dm.update(0, pwmPeriod/i);
+		dm.update(0, pwmPeriod/3);
 	}
 	
 	

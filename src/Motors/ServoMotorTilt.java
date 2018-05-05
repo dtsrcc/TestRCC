@@ -42,9 +42,7 @@ public class ServoMotorTilt extends Task {
 		 }
 		 position = !position;
 	 }
-	 
 
-	
 	 static { // Task Initialisierung
 			 new ServoMotorTilt();
 	 }

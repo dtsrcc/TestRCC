@@ -15,4 +15,7 @@ project Testing {
 #	rootclasses = "Motors.ServoMotorTilt";
 #	rootclasses = "Motors.DCMotorDrive";
 	rootclasses = "Motors.DCMotorTest";
+#	rootclasses = "Motors.DCMotorLift";
+#	rootclasses = "Motors.SignMagn";
+#	rootclasses = "Motors.ServoMotorGrab";
 }

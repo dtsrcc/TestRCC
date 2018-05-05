@@ -17,7 +17,7 @@ public class DCMotorDrive {
 	private TPU_PWM pwmL, pwmR;
 	
 	
-	private DCMotorDrive() {
+	DCMotorDrive() {
 	// PWM-Kanaele initialisieren
 		currHightimeL = 0;
 		currHightimeR = 0;
@@ -26,7 +26,7 @@ public class DCMotorDrive {
 	}
 	
 	
-	public static void leftFull() {
+	/*public static void leftFull() {
 		dm.update(pwmPeriod, 0);
 	}
 	
@@ -40,10 +40,20 @@ public class DCMotorDrive {
 	
 	public static void rightHalf() {
 		dm.update(0, pwmPeriod/2);
-	}
+	}*/
 	
 	public static void stop() {
 		dm.update(0, 0);
+	}
+	
+	public static void driveForward(int i)
+	{
+		dm.update(pwmPeriod/i, 0);
+	}
+	
+	public static void driveReverse(int i)
+	{
+		dm.update(0, pwmPeriod/i);
 	}
 	
 	

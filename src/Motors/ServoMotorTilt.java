@@ -7,8 +7,10 @@ public class ServoMotorTilt extends Task {
 	 private final int testChannel = 0;
 	 private final boolean useTPUA = true;
 	 private boolean position = true;
+	 //private int value1 = 1200000;
+	 //private int value2 = 2200000;
 	
-	 //pwmPeriod in TimeBase Unit (50’000 ns)
+	 //pwmPeriod in TimeBase Unit (50'000 ns)
 	 private final int pwmPeriod = 10000000 / TPU_PWM.tpuTimeBase;
 	
 	 public int highTime = 0;
@@ -21,7 +23,7 @@ public class ServoMotorTilt extends Task {
 	 	Task.install(this);
 	 }
 	 
-	 public void action() {
+	 /*public void action(){
 		 // highTime = (highTime + pwmPeriod / 10) % pwmPeriod;
 		 if (position) {
 			 pwm.update(650000/ TPU_PWM.tpuTimeBase);
@@ -29,7 +31,19 @@ public class ServoMotorTilt extends Task {
 			 pwm.update(2550000/ TPU_PWM.tpuTimeBase);
 		 }
 		 position = !position;
+	 }*/
+	 
+	 public void action(){
+		 // highTime = (highTime + pwmPeriod / 10) % pwmPeriod;
+		 if (position) {
+			 pwm.update(1200000/ TPU_PWM.tpuTimeBase);
+		 } else {
+			 pwm.update(2200000/ TPU_PWM.tpuTimeBase);
+		 }
+		 position = !position;
 	 }
+	 
+
 	
 	 static { // Task Initialisierung
 			 new ServoMotorTilt();

@@ -13,6 +13,7 @@ project Testing {
 #	rootclasses = "fadeLED";
 #	rootclasses = "DecoderBlub";
 #	rootclasses = "Motors.DCMotor";
+#	rootclasses = "Motors.ServoMotor";
 #	rootclasses = "Motors.MotorTest";
-	rootclasses = "Motors.ServoMotor";
+	rootclasses = "Motors.Main";
 }

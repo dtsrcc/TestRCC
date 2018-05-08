@@ -10,7 +10,7 @@ public class DCMotor {
 	private static DCMotor dcm;  // Diese Klasse hat eine Instanz von sich selber
 
 	private final boolean useTPUA =false;
-	private final int chnL = 8, chnR = 9;
+	private final int chnL = 9, chnR = 10;
 	private final static int pwmPeriod = 50000 / TPU_PWM.tpuTimeBase;
 
 	private int currHightimeL, currHightimeR;
@@ -54,7 +54,7 @@ public class DCMotor {
 	
 	public static void driveReverse(int i)
 	{
-		dcm.update(0, pwmPeriod/3);
+		dcm.update(0, pwmPeriod/i);
 	}
 	
 	

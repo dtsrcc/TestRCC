@@ -5,8 +5,8 @@ import java.io.PrintStream;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI;
 import ch.ntb.inf.deep.runtime.mpc555.driver.TPU_PWM;
 
-public class DCMotorLift {
-	private static DCMotorLift lm;  // Diese Klasse hat eine Instanz von sich selber
+public class DCMotorTest {
+	private static DCMotorTest lm;  // Diese Klasse hat eine Instanz von sich selber
 
 	private final boolean useTPUA =true;
 	private final int chnL = 0, chnR = 1;
@@ -16,7 +16,7 @@ public class DCMotorLift {
 	private TPU_PWM pwmL, pwmR;
 	
 	
-	DCMotorLift() {
+	DCMotorTest() {
 	// PWM-Kanaele initialisieren
 		currHightimeL = 0;
 		currHightimeR = 0;
@@ -66,7 +66,7 @@ public class DCMotorLift {
 		System.out = new PrintStream(sci1.out);
 		
 		// Objekt erzeugen
-		lm = new DCMotorLift();
+		lm = new DCMotorTest();
 		
 		// Kopfzeile Ausgeben
 		System.out.println("Hightime Left \t/\t Hightime Right \t/\t Period");

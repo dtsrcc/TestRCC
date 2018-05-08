@@ -4,7 +4,7 @@ package Motors;
 import ch.ntb.inf.deep.runtime.mpc555.driver.TPU_PWM;
 
 
-public class ServoMotorGrab {
+public class ServoMotor {
 	final boolean useTPUA = true;
 	final int pwmChannel = 0;
 	final int pwmPeriode = 20000000 / TPU_PWM.tpuTimeBase;
@@ -14,7 +14,7 @@ public class ServoMotorGrab {
 	
 	private static TPU_PWM pwm;
 	
-	public ServoMotorGrab() {
+	public ServoMotor() {
 	pwm = new TPU_PWM(useTPUA, pwmChannel, pwmPeriode, minHighTime);
 	}
 	
@@ -29,6 +29,6 @@ public class ServoMotorGrab {
 	
 	static {
 		
-		new ServoMotorGrab();
+		new ServoMotor();
 	}
 }

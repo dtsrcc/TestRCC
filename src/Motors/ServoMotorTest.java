@@ -3,7 +3,7 @@ package Motors;
 import ch.ntb.inf.deep.runtime.mpc555.driver.TPU_PWM;
 import ch.ntb.inf.deep.runtime.ppc32.Task;
 
-public class ServoMotorTilt extends Task {
+public class ServoMotorTest extends Task {
 	 private final int testChannel = 0;
 	 private final boolean useTPUA = true;
 	 private boolean position = true;
@@ -17,7 +17,7 @@ public class ServoMotorTilt extends Task {
 	
 	 private TPU_PWM pwm;
 	
-	 public ServoMotorTilt(){
+	 public ServoMotorTest(){
 		pwm = new TPU_PWM(useTPUA, testChannel, pwmPeriod, highTime);
 	 	period = 2000; // Periodenlaenge des Tasks in ms
 	 	Task.install(this);
@@ -44,7 +44,7 @@ public class ServoMotorTilt extends Task {
 	 }
 
 	 static { // Task Initialisierung
-			 new ServoMotorTilt();
+			 new ServoMotorTest();
 	 }
 
 }

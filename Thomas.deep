@@ -12,10 +12,7 @@ project Testing {
 #	rootclasses = "KnightRider.KnightRider";
 #	rootclasses = "fadeLED";
 #	rootclasses = "DecoderBlub";
-#	rootclasses = "Motors.ServoMotorTilt";
-#	rootclasses = "Motors.DCMotorDrive";
-	rootclasses = "Motors.DCMotorTest";
-#	rootclasses = "Motors.DCMotorLift";
-#	rootclasses = "Motors.SignMagn";
-#	rootclasses = "Motors.ServoMotorGrab";
+#	rootclasses = "Motors.DCMotor";
+#	rootclasses = "Motors.MotorTest";
+	rootclasses = "Motors.ServoMotor";
 }

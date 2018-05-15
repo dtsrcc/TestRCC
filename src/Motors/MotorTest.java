@@ -27,7 +27,8 @@ public class MotorTest {
 		DCMotor.stop();
 	}
 	
-	public static void startmain()
+	
+	/*public static void startmain()
 	{
 		
 		SCI sci1 = SCI.getInstance(SCI.pSCI1);
@@ -39,7 +40,7 @@ public class MotorTest {
 		
 	}
 	
-	/*public static void angle10()
+	public static void angle10()
 	{
 		ServoMotor.setPosition10();
 	}

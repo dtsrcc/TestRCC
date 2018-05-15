@@ -11,6 +11,7 @@ public class ServoMotor {
 	final int minHighTime = 1200000 / TPU_PWM.tpuTimeBase;
 	long lastMovement = 0;
 	int lastPos = 0;
+	int speedValue = 50000;
 	//final static int maxHighTime = 2200000 / TPU_PWM.tpuTimeBase;
 	//final int offsetPerDegree = 0;// Ihr Code
 	
@@ -49,7 +50,7 @@ public class ServoMotor {
 	
 	public void setPositionSlow(int degree)
 	{
-		if((lastMovement+50000)<System.currentTimeMillis()) { // 50000 equals 50ms
+		if((lastMovement+speedValue)<System.currentTimeMillis()) { // 50000 equals 50ms
 			int targetPos = (1200000 + (degree * 11111));
 			int nextPos = 0;
 			if (targetPos>lastPos) {
@@ -75,8 +76,4 @@ public class ServoMotor {
 		pwm.update(highTime);
 	}
 	
-	/*static {
-		
-		new ServoMotor();
-	}*/
 }

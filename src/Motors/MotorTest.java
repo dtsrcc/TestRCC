@@ -1,7 +1,7 @@
 package Motors;
 import java.io.PrintStream;
 
-import Motors.ServoMotor;
+//import Motors.ServoMotor;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI;
 
 public class MotorTest {
@@ -12,7 +12,7 @@ public class MotorTest {
 		
 	}
 	
-	public static void forward()
+	/*public static void forward()
 	{
 		DCMotor.driveForward(2);
 	}
@@ -25,7 +25,7 @@ public class MotorTest {
 	public static void stop()
 	{
 		DCMotor.stop();
-	}
+	}*/
 	
 	
 	/*public static void startmain()

@@ -10,7 +10,7 @@ public class DCMotor {
 	private static DCMotor dcm;  // Diese Klasse hat eine Instanz von sich selber
 
 	private final boolean useTPUA =false;
-	private final int chnL = 9, chnR = 10;
+	private final int chnL = 12, chnR = 13;
 	private final static int pwmPeriod = 50000 / TPU_PWM.tpuTimeBase;
 
 	private int currHightimeL, currHightimeR;
@@ -42,17 +42,17 @@ public class DCMotor {
 		dm.update(0, pwmPeriod/2);
 	}*/
 	
-	public static void stop()
+	public void stop()
 	{
 		dcm.update(0, 0);
 	}
 	
-	public static void driveForward(int i)
+	public void driveForward(int i)
 	{
 		dcm.update(pwmPeriod/i, 0);
 	}
 	
-	public static void driveReverse(int i)
+	public void driveReverse(int i)
 	{
 		dcm.update(0, pwmPeriod/i);
 	}
@@ -64,25 +64,14 @@ public class DCMotor {
 		pwmL.update(hightimeL);
 		pwmR.update(hightimeR);
 		
-		System.out.print(hightimeL); System.out.print("\t/\t");
-		System.out.print(hightimeR); System.out.print("\t/\t");
-		System.out.print(pwmPeriod); System.out.println();
 	}
 	
 	
 	static {
-		// 1) Initialize SCI1 (9600 8N1)
-		SCI sci1 = SCI.getInstance(SCI.pSCI1);
-		sci1.start(9600, SCI.NO_PARITY, (short)8);
-		
-		// 2) Use SCI1 for stdout
-		System.out = new PrintStream(sci1.out);
-		
-		// Objekt erzeugen
+	
 		dcm = new DCMotor();
 		
-		// Kopfzeile Ausgeben
-		System.out.println("Hightime Left \t/\t Hightime Right \t/\t Period");
+		
 	}
 	
 

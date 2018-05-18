@@ -41,10 +41,10 @@ public class Main extends Task
 		//switch4 = new LimitSwitch(8);
 		//switch5 = new LimitSwitch(9);
 		
-		Servo1 = new ServoMotor(11, 45);
-		Servo2 = new ServoMotor(9, 45);
-		Servo1.speedValue = 50000;
-		Servo2.speedValue = 500;
+		Servo1 = new ServoMotor(11, 45, 5, 80);	// Pin, DefaultPos, MinPos, MaxPos
+		Servo2 = new ServoMotor(8, 15, 1, 30);	// Pin, DefaultPos, MinPos, MaxPos
+		//Servo1.speedValue = 50000;
+		//Servo2.speedValue = 500;
 		
 		dc1 = new DCMotor();
 		fqd = new TPU_FQD(true, 4);
@@ -53,49 +53,35 @@ public class Main extends Task
 
 	
 	public void action(){
-		//System.out.println("start");
 
-		if(switch1.getSwitchInputs() == false)
-		{
+		if(switch1.getSwitchInputs() == false){
 			dc1.driveForward(4);
 			pos = fqd.getPosition();
-			System.out.println(pos);
-			
+			System.out.println(pos);	
 		}
-		if(switch1.getSwitchInputs() == true)
-		{
+		if(switch1.getSwitchInputs() == true){
 			dc1.stop();
 			pos = fqd.getPosition();
 			System.out.println(pos);
-
 		}
 		
-		if(switch2.getSwitchInputs() == false)
-		{
-			Servo2.setPositionSlow(90);
-			//switch1State = switch1.getSwitchInputs();
-			//System.out.print("Switch 1 state is now: ");
-			//System.out.println("false");
+		
+		if(switch2.getSwitchInputs() == false){
+			Servo2.setPositionSlow(30);			//wegdrehen, abstellposition 30
 		}
-		if(switch2.getSwitchInputs() == true)
-		{
-			Servo2.setPositionSlow(0);
-			//switch1State = switch1.getSwitchInputs();
-			//System.out.print("Switch 1 state is now: ");
-			//System.out.println("true");
+		if(switch2.getSwitchInputs() == true){
+			Servo2.setPositionSlow(6);			//wegdrehen, arbeitsposition 10
 		}
 		
+		
+		if (switch3.getSwitchInputs() == false) {
+			Servo1.setPosition(0);				//Geschlossen 0
+		}
 		if (switch3.getSwitchInputs() == true) {
-			//System.out.println("start true");
-			Servo1.speedValue = 50000;
-			//Servo2.speedValue = 50000;
-			
-			
-		} else {
-			//System.out.println("start false");
-			Servo1.speedValue = 500;
-			//Servo2.speedValue = 500;
+			Servo1.setPosition(90);				//Offen 90
 		}
+			
+
 		
 		
 
@@ -104,10 +90,10 @@ public class Main extends Task
 	
 	static
 	{
-		SCI sci1 = SCI.getInstance(SCI.pSCI1);
+		/*SCI sci1 = SCI.getInstance(SCI.pSCI1);
 		sci1.start(38400, SCI.NO_PARITY, (short)8);
 		System.out = new PrintStream(sci1.out);
-		
+		*/
 		Task t = new Main();
 		t.period = 10;
 		Task.install(t);

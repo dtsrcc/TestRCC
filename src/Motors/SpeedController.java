@@ -2,6 +2,8 @@ package Motors;
 
 import ch.ntb.inf.deep.runtime.ppc32.Task;
 import ch.ntb.sysp.lib.SpeedController4DCMotor;
+import java.io.PrintStream;
+import ch.ntb.inf.deep.runtime.mpc555.driver.SCI;
 
 
 public class SpeedController extends Task {
@@ -9,6 +11,8 @@ public class SpeedController extends Task {
 	protected static final int TPU_PWM_CH0 = 12;
 	protected static final int TPU_PWM_CH1 = 13;
 	protected static final int TPU_FQD_A = 4;
+	
+	public int i=0;
 
 	/* Controller parameters */
 	protected static final float ts = 0.001f;
@@ -24,6 +28,24 @@ public class SpeedController extends Task {
 	 
 	public void action() {
 	  motor.run();
+	  //motor.getActualPosition();
+	  if(motor.getActualPosition() > 9)
+	  {
+		  motor.setDesiredSpeed(3.14f);
+	  } 
+ 
+	  if(motor.getActualPosition() < 1)
+	  {
+		  motor.setDesiredSpeed(-3.14f);
+	  }
+	  
+	  if(i > 1000) {
+		  System.out.println(motor.getActualPosition());
+		  i = 0;
+	  } else {
+		  i++;
+	  }
+	  
 	}
 
 	static {
@@ -31,12 +53,16 @@ public class SpeedController extends Task {
 	  motor = new SpeedController4DCMotor(ts, TPU_PWM_CH0, TPU_PWM_CH1, TPU_A, TPU_FQD_A, TPU_A, ticksPerRotation, motorVoltage, gearRatio, kp, tn);
 
 	  // Set desired speed
-	  motor.setDesiredSpeed(6.28f);
+	  motor.setDesiredSpeed(3.14f);
 
 	  // Initialize task
 	  Task t = new SpeedController();
 	  t.period = (int) (ts * 1000);
 	  Task.install(t);
+	  
+	  SCI sci1 = SCI.getInstance(SCI.pSCI1);
+		sci1.start(38400, SCI.NO_PARITY, (short)8);
+		System.out = new PrintStream(sci1.out);
 	}
 
 

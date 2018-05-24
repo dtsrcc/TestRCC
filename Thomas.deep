@@ -17,5 +17,9 @@ project Testing {
 #	rootclasses = "Motors.MotorTest";
 #	rootclasses = "Motors.Main";
 #	rootclasses = "Motors.DCMotorTest";
-	rootclasses = "Motors.SpeedController";
+#	rootclasses = "Motors.SpeedController";
+	rootclasses = "wifi.WifiDemo";
+#	rootclasses = "wifi.WifiStatus";
+#	rootclasses = "wifi.WifiTransmitter";
+#	rootclasses = "wifi.WifiReceiver";
 }

@@ -8,7 +8,7 @@ import ch.ntb.inf.deep.runtime.mpc555.driver.TPU_PWM;
 
 
 public class ServoMotor {
-	final boolean useTPUA = false;
+	final boolean useTPUA = true;
 	final int pwmPeriode = 20000000 / TPU_PWM.tpuTimeBase;
 	final int minHighTime = 1200000 / TPU_PWM.tpuTimeBase;
 	final int maxHighTime = 2200000 / TPU_PWM.tpuTimeBase;
@@ -32,9 +32,9 @@ public class ServoMotor {
 		minPosServo = minPos;
 		maxPosServo = maxPos;
 		
-		SCI sci1 = SCI.getInstance(SCI.pSCI1);
-		sci1.start(38400, SCI.NO_PARITY, (short)8);
-		System.out = new PrintStream(sci1.out);
+		/*SCI sci1 = SCI.getInstance(SCI.pSCI1);
+		sci1.start(19200, SCI.NO_PARITY, (short)8);
+		System.out = new PrintStream(sci1.out);*/
 	}
 	
 	public void setPositionSlow(int degree)				// Buggy meeds to be fixed

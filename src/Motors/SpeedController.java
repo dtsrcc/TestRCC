@@ -7,7 +7,7 @@ import ch.ntb.inf.deep.runtime.mpc555.driver.SCI;
 
 
 public class SpeedController extends Task {
-	protected static final boolean TPU_A = false;
+	protected static final boolean TPU_A = true;
 	protected static final int TPU_PWM_CH0 = 12;
 	protected static final int TPU_PWM_CH1 = 13;
 	protected static final int TPU_FQD_A = 4;
@@ -28,24 +28,7 @@ public class SpeedController extends Task {
 	 
 	public void action() {
 	  motor.run();
-	  //motor.getActualPosition();
-	  if(motor.getActualPosition() > 9)
-	  {
-		  motor.setDesiredSpeed(3.14f);
-	  } 
- 
-	  if(motor.getActualPosition() < 1)
-	  {
-		  motor.setDesiredSpeed(-3.14f);
-	  }
-	  
-	  if(i > 1000) {
-		  System.out.println(motor.getActualPosition());
-		  i = 0;
-	  } else {
-		  i++;
-	  }
-	  
+
 	}
 
 	static {
@@ -53,7 +36,7 @@ public class SpeedController extends Task {
 	  motor = new SpeedController4DCMotor(ts, TPU_PWM_CH0, TPU_PWM_CH1, TPU_A, TPU_FQD_A, TPU_A, ticksPerRotation, motorVoltage, gearRatio, kp, tn);
 
 	  // Set desired speed
-	  motor.setDesiredSpeed(3.14f);
+	  motor.setDesiredSpeed(10);
 
 	  // Initialize task
 	  Task t = new SpeedController();

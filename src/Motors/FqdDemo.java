@@ -7,7 +7,7 @@ import ch.ntb.inf.deep.runtime.mpc555.driver.SCI;
 import ch.ntb.inf.deep.runtime.mpc555.driver.TPU_FQD;
 
 public class FqdDemo extends Task {
-	final byte tpuPin4 = 4;
+	final byte tpuPin4 = 10;
 
 	final boolean useTPUA = true;
 	private TPU_FQD fqd;
@@ -25,7 +25,7 @@ public class FqdDemo extends Task {
 	static {
 		// 1) Initialize SCI1 (9600 8N1)
 		SCI sci1 = SCI.getInstance(SCI.pSCI1);
-		sci1.start(9600, SCI.NO_PARITY, (short)8);
+		sci1.start(19200, SCI.NO_PARITY, (short)8);
  
 		// 2) Use SCI1 for stdout
 		System.out = new PrintStream(sci1.out);

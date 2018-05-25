@@ -21,7 +21,7 @@ package Motors;
 
 import java.io.PrintStream;
 
-import Sensors.LimitSwitch;
+import Sensors.LimitSwitchold;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI;
 import ch.ntb.inf.deep.runtime.mpc555.driver.TPU_FQD;
 import ch.ntb.inf.deep.runtime.ppc32.*;
@@ -34,12 +34,12 @@ public class Main extends Task
 	boolean switch2State;
 	
 	
-	LimitSwitch switch1;
-	LimitSwitch switch2;
-	LimitSwitch switch3;
-	LimitSwitch switch4;
-	LimitSwitch switch5;
-	LimitSwitch switch6;
+	LimitSwitchold switch1;
+	LimitSwitchold switch2;
+	LimitSwitchold switch3;
+	LimitSwitchold switch4;
+	LimitSwitchold switch5;
+	LimitSwitchold switch6;
 	
 	ServoMotor Servo1;
 	ServoMotor Servo2;
@@ -56,14 +56,14 @@ public class Main extends Task
 		switch1State = false;
 		switch2State = false;
 		
-		switch1 = new LimitSwitch(7);
-		switch2 = new LimitSwitch(8);
-		switch3 = new LimitSwitch(9);
-		switch4 = new LimitSwitch(10);
-		switch5 = new LimitSwitch(11);
-		switch6 = new LimitSwitch(12);
+		switch1 = new LimitSwitchold(7);
+		switch2 = new LimitSwitchold(8);
+		switch3 = new LimitSwitchold(9);
+		switch4 = new LimitSwitchold(10);
+		switch5 = new LimitSwitchold(11);
+		switch6 = new LimitSwitchold(12);
 		
-		Servo1 = new ServoMotor(11, 45, 5, 80);	// Pin, DefaultPos, MinPos, MaxPos
+		Servo1 = new ServoMotor(11, 45, 5, 85);	// Pin, DefaultPos, MinPos, MaxPos
 		Servo2 = new ServoMotor(2, 15, 1, 30);	// Pin, DefaultPos, MinPos, MaxPos
 		//Servo1.speedValue = 50000;
 		//Servo2.speedValue = 500;
@@ -78,46 +78,15 @@ public class Main extends Task
 		
 		
 		if (switch1.getSwitchInputs() == false) {
-			System.out.print("Switch1 false  ");
+			System.out.println("Switch1 false  ");
+			//Servo1.setPosition(5);
+			dc1.driveForward(1);
 		}
 		if (switch1.getSwitchInputs() == true) {
-			System.out.print("Switch1 true  ");
+			System.out.println("Switch1 true  ");
+			//Servo1.setPosition(25);
+			dc1.stop();
 		}
-		
-		if (switch2.getSwitchInputs() == false) {
-			System.out.print("Switch2 false  ");
-		}
-		if (switch2.getSwitchInputs() == true) {
-			System.out.print("Switch2 true  ");
-		}
-		
-		if (switch3.getSwitchInputs() == false) {
-			System.out.print("Switch3 false  ");
-		}
-		if (switch3.getSwitchInputs() == true) {
-			System.out.print("Switch3 true  ");
-		}
-		
-		if (switch4.getSwitchInputs() == false) {
-			System.out.print("Switch4 false  ");
-		}
-		if (switch4.getSwitchInputs() == true) {
-			System.out.print("Switch4 true  ");
-		}
-		
-		if (switch5.getSwitchInputs() == false) {
-			System.out.print("Switch5 false  ");
-		}
-		if (switch5.getSwitchInputs() == true) {
-			System.out.print("Switch5 true  ");
-		}
-		
-		if (switch6.getSwitchInputs() == false) {
-			System.out.println("Switch6 false");
-		}
-		if (switch6.getSwitchInputs() == true) {
-			System.out.println("Switch6 true");
-		}		
 
 	}
 		

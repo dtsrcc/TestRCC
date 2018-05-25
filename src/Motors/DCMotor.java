@@ -9,8 +9,8 @@ import ch.ntb.inf.deep.runtime.mpc555.driver.TPU_PWM;
 public class DCMotor {
 	private static DCMotor dcm;  // Diese Klasse hat eine Instanz von sich selber
 
-	private final boolean useTPUA =false;
-	private final int chnL = 12, chnR = 13;
+	private final boolean useTPUA =true;
+	private final int chnL = 8, chnR = 9;
 	private final static int pwmPeriod = 50000 / TPU_PWM.tpuTimeBase;
 
 	private int currHightimeL, currHightimeR;

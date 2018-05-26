@@ -4,18 +4,23 @@
  * 		Servo TPU-A 0
  * 		Servo TPU-A 2
  * 
- * 		Taster	7
- * 		Taster	9
- * 		Taster	11
- * 		Taster	12
- * 		Taster	10
- * 		Taster	8
+ * 		Taster	MPIOB 7
+ * 		Taster	MPIOB 9
+ * 		Taster	MPIOB 11
+ * 		Taster	MPIOB 12
+ * 		Taster	MPIOB 10
+ * 		Taster	MPIOB 8
  * 
+ * 		Motor1 	TPU-A	4
+ * 		Motor1 	TPU-A	5
+ * 		Encoder1 TPU-A	10
+ * 		Encoder1 TPU-A	11
+ * 
+ * 		Motor2 	TPU-A	8
+ * 		Motor2 	TPU-A	9
+ * 		Encoder2 TPU-A	6
+ * 		Encoder2 TPU-A	7
  */
-
-
-
-
 
 package Motors;
 
@@ -50,7 +55,7 @@ public class Main extends Task
 	
 	long pos=0;
 	
-	public Main() {
+	public Main() throws Exception{
 		time = System.currentTimeMillis();
 		
 		switch1State = false;
@@ -63,13 +68,12 @@ public class Main extends Task
 		switch5 = new LimitSwitchold(11);
 		switch6 = new LimitSwitchold(12);
 		
-		Servo1 = new ServoMotor(11, 45, 5, 85);	// Pin, DefaultPos, MinPos, MaxPos
-		Servo2 = new ServoMotor(2, 15, 1, 30);	// Pin, DefaultPos, MinPos, MaxPos
-		//Servo1.speedValue = 50000;
-		//Servo2.speedValue = 500;
+		Servo1 = new ServoMotor(3, 45, 5, 85);	// Pin, DefaultPos, MinPos, MaxPos
+		Servo2 = new ServoMotor(0, 15, 1, 30);	// Pin, DefaultPos, MinPos, MaxPos
 		
 		dc1 = new DCMotor();
 		fqd = new TPU_FQD(true, 4);
+
 		
 	}
 
@@ -79,17 +83,21 @@ public class Main extends Task
 		
 		if (switch1.getSwitchInputs() == false) {
 			System.out.println("Switch1 false  ");
-			//Servo1.setPosition(5);
-			dc1.driveForward(1);
+			Servo1.setPosition(8);
+			//dc1.driveForward(1);
 		}
 		if (switch1.getSwitchInputs() == true) {
 			System.out.println("Switch1 true  ");
-			//Servo1.setPosition(25);
-			dc1.stop();
+			Servo1.setPosition(25);
+			//dc1.stop();
 		}
 
+	
+	
+	
+	
+	
 	}
-		
 	
 	static
 	{
@@ -97,9 +105,13 @@ public class Main extends Task
 		sci1.start(19200, SCI.NO_PARITY, (short)8);
 		System.out = new PrintStream(sci1.out);
 		
-		Task t = new Main();
-		t.period = 100;
-		Task.install(t);
+		try{
+			Task t = new Main();
+			t.period = 500;
+			Task.install(t);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 
 	}
 	

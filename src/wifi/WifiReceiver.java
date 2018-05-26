@@ -11,8 +11,6 @@ import ch.ntb.inf.deep.runtime.mpc555.driver.SCI;
 
 public class WifiReceiver extends Task {
 	final int resetPin = 11;
-	public MPIOSM_DIO led;
-	boolean ledState;
 	
 	private RN131 wifi;
 	
@@ -22,33 +20,16 @@ public class WifiReceiver extends Task {
 		SCI sci = SCI.getInstance(SCI.pSCI2);
 		sci.start(115200, SCI.NO_PARITY, (short)8);
 
-		wifi = new RN131(sci.in , sci.out, new MPIOSM_DIO(11, true));
-		
-		led = new MPIOSM_DIO(14, true);
-		ledState = false;
-		led.set(ledState);
+		wifi = new RN131(sci.in , sci.out, new MPIOSM_DIO(resetPin, true));
 	}
 	
 	public void action(){
-		RN131.State state = wifi.getState();
-		ledState = !ledState;
-		switch(state){
-		case wait:
-			led.set(ledState);
-			break;
-		case ready:
-			led.set(true);
-			break;
-		default:
-			led.set(false);
-			break;
-		}
+		
 		while (true) {
 			CmdInt.Type type = wifi.cmd.readCmd();
 			if (type == CmdInt.Type.None) break;
 			if (type == CmdInt.Type.Cmd) {
-				System.out.print("command=");
-				System.out.print(wifi.cmd.getInt());
+				System.out.println(wifi.cmd.getInt());
 			}
 			else if (type == CmdInt.Type.Code) {
 				System.out.print("code=");
@@ -60,6 +41,7 @@ public class WifiReceiver extends Task {
 				System.out.print(")=");
 				System.out.print(wifi.cmd.getInt());
 			}
+			wifi.cmd.writeCmd(310);
 		}
 	}
 	

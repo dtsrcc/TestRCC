@@ -29,16 +29,16 @@ public class WifiTransmitter extends Task{
 		
 	public void sendCmd() {
 		if (wifi.connected()) {
-			wifi.cmd.writeCmd(sendData);
+			wifi.cmd.writeCmd(310);
+			//System.out.println("Switch1 true  ");
 		}
 	}
 	
 	public void action(){
 		if (send) {
-			sendCmd();
-			send = false;
+			wifi.cmd.writeCmd(310);
 		}else{
-			send = true;
+			wifi.cmd.writeCmd(310);
 		}
 	}
 	

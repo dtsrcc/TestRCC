@@ -32,18 +32,23 @@ public class DCMotorEncoder extends Task
 	
 	LimitSwitchold switch1;
 	LimitSwitchold switch2;
+	LimitSwitchold switch3;
 	
 	private TPU_FQD fqd;
 	
-	int überlauf;
+	int overflow;
 	short oldpos = 0;
-	long realpos;
+	long realpos = 0;
+	long actualpos = 0;
+	int a = 0;
+	int b = 0;
 	
 	public DCMotorEncoder()
 	{
 		speedcon = new SpeedController4DCMotor(ts, TPU_PWM_CH0, TPU_PWM_CH1, TPU_A, TPU_FQD_A, TPU_A, ticksPerRotation, motorVoltage, gearRatio, kp, tn);
 		switch1 = new LimitSwitchold(7);
 		switch2 = new LimitSwitchold(8);
+		switch3 = new LimitSwitchold(9);
 		fqd = new TPU_FQD(true, 4);
 		
 	}
@@ -55,59 +60,73 @@ public class DCMotorEncoder extends Task
 		
 		short pos = fqd.getPosition();
 		
-		/*if(switch1.getSwitchInputs() == false)
+		if(oldpos > 0 && pos < 0)
 		{
-			//System.out.println(fqd.getPosition());
-			speedcon.setDesiredSpeed(30);
+			overflow++;
 		}
 		
-		if(fqd.getPosition() >= -30000 && fqd.getPosition() <= -25000)
+		realpos = overflow * 32767 * 2 + 32767 + pos;
+		
+		oldpos = pos;
+		
+		if(switch1.getSwitchInputs() == false)
 		{
-			//System.out.print("> 0       ");
-			speedcon.setDesiredSpeed(0);
+			speedcon.setDesiredSpeed(10);
 		}
 		
 		if(switch1.getSwitchInputs() == true)
 		{
-			speedcon.setDesiredSpeed(-30);
-		}*/
-		
-		if(oldpos > 0 && pos < 0)
+			speedcon.setDesiredSpeed(0);
+			
+			if(b == 0)
+			{
+				actualpos = realpos;
+				b++;
+			}
+
+		}
+				
+		if(switch2.getSwitchInputs() == true)
 		{
-			überlauf++;
+			speedcon.setDesiredSpeed(-10);
+			
+			if(a == 0)
+			{
+				realpos = 0;
+				a++;
+			}
+
+			
+			if(realpos >= actualpos)
+			{
+				speedcon.setDesiredSpeed(0);
+				
+			}
 		}
 		
-		realpos = überlauf * 32768 * 2 + 32768 + pos;
+		if(switch3.getSwitchInputs() == true)
+		{
+			a = 0;
+			b = 0;
+			actualpos = 0;
+			realpos = 0;
+		}
 		
-		oldpos = pos;
-	    System.out.println(realpos);
+		//speedcon.setDesiredSpeed(10);
 		
+		//System.out.print("  ");
 
-		speedcon.setDesiredSpeed(1);
-		
-		
-		
+
 		speedcon.run();
 		
+		
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 	static
 	{
 		Task t = new DCMotorEncoder();
-		  t.period = (int) (ts * 1000000);
-		  //t.period = (500);
-		  Task.install(t);
+		t.period = (int) (ts * 1000);
+		Task.install(t);
 		
 		
 		SCI sci1 = SCI.getInstance(SCI.pSCI1);
@@ -121,5 +140,23 @@ public class DCMotorEncoder extends Task
 	
 	
 	
-
+	/*if(switch1.getSwitchInputs() == false)
+	{
+		//System.out.println(fqd.getPosition());
+		speedcon.setDesiredSpeed(30);
+	}
+	
+	if(fqd.getPosition() >= -30000 && fqd.getPosition() <= -25000)
+	{
+		//System.out.print("> 0       ");
+		speedcon.setDesiredSpeed(0);
+	}
+	
+	if(switch1.getSwitchInputs() == true)
+	{
+		speedcon.setDesiredSpeed(-30);
+	}*/
+	
+    //System.out.println(realpos);
+	//speedcon.setDesiredSpeed(0);
 }

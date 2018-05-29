@@ -68,7 +68,7 @@ public class Main extends Task
 		switch5 = new LimitSwitchold(11);
 		switch6 = new LimitSwitchold(12);
 		
-		Servo1 = new ServoMotor(3, 45, 5, 85);	// Pin, DefaultPos, MinPos, MaxPos
+		Servo1 = new ServoMotor(3, 45, 5, 85);	// Pin, DefaultPos, MinPos, MaxPos //Für Schwenkservo richtig bestimmt(-10;-7;68)! Für Greiferservo auch bestimmt(5;8;80)!
 		Servo2 = new ServoMotor(0, 15, 1, 30);	// Pin, DefaultPos, MinPos, MaxPos
 		
 		dc1 = new DCMotor();
@@ -88,7 +88,7 @@ public class Main extends Task
 		}
 		if (switch1.getSwitchInputs() == true) {
 			System.out.println("Switch1 true  ");
-			Servo1.setPosition(25);
+			Servo1.setPosition(81);
 			//dc1.stop();
 		}
 

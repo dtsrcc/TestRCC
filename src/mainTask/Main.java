@@ -22,10 +22,12 @@
  * 		Encoder2 TPU-A	7
  */
 
-package Motors;
+package mainTask;
 
 import java.io.PrintStream;
 
+import Motors.DCMotorEncoder;
+import Motors.ServoMotor;
 import Sensors.LimitSwitchold;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI;
 import ch.ntb.inf.deep.runtime.mpc555.driver.TPU_FQD;
@@ -52,7 +54,7 @@ public class Main extends Task
 	
 	TPU_FQD fqd;
 	
-	DCMotor dc1;
+	DCMotorEncoder dcm;
 	
 	long pos=0;
 	
@@ -73,7 +75,7 @@ public class Main extends Task
 		ServoGuide = new ServoMotor(1,-10, -7, 68);	// Pin, DefaultPos, MinPos, MaxPos
 		ServoAngle = new ServoMotor(0, 15, 10, 30);
 		
-		dc1 = new DCMotor();
+		dcm = new DCMotorEncoder();
 		fqd = new TPU_FQD(true, 4);
 
 		

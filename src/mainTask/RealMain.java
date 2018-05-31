@@ -22,10 +22,12 @@
  * 		Encoder2 TPU-A	7
  */
 
-package Motors;
+package mainTask;
 
 import java.io.PrintStream;
 
+import Motors.DCMotorEncoder;
+import Motors.ServoMotor;
 import Sensors.LimitSwitchold;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI;
 import ch.ntb.inf.deep.runtime.mpc555.driver.TPU_FQD;

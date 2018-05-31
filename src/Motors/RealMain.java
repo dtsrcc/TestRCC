@@ -41,23 +41,22 @@ public class RealMain extends Task
 	boolean switch1State;
 	boolean switch2State;
 	
-	final int resetPin = 5;	//Wifi 
-	
 	private RN131 wifi;	
 	
-	LimitSwitchold switch1;
-	LimitSwitchold switch2;
-	LimitSwitchold switch3;
-	LimitSwitchold switch4;
-	LimitSwitchold switch5;
-	LimitSwitchold switch6;
+	LimitSwitchold switchWhite;
+	LimitSwitchold switchRed;
+	LimitSwitchold switchLimit1;
+	LimitSwitchold switchLimit2;
+	LimitSwitchold switchLimit3;
+	LimitSwitchold switchLimit4;
 	
-	ServoMotor Servo1;
-	ServoMotor Servo2;
+	ServoMotor ServoGripper;
+	ServoMotor ServoGuide;
+	ServoMotor ServoAngle;
 	
 	TPU_FQD fqd;
 	
-	DCMotor dc1;
+	DCMotorEncoder dcm;
 	
 	int state = 0;
 	int wifiState = 0;
@@ -71,23 +70,24 @@ public class RealMain extends Task
 		switch1State = false;
 		switch2State = false;
 		
-		switch1 = new LimitSwitchold(7);
-		switch2 = new LimitSwitchold(8);
-		switch3 = new LimitSwitchold(9);
-		switch4 = new LimitSwitchold(10);
-		switch5 = new LimitSwitchold(11);
-		switch6 = new LimitSwitchold(12);
+		switchWhite = new LimitSwitchold(7);
+		switchRed = new LimitSwitchold(8);
+		switchLimit1 = new LimitSwitchold(9);
+		switchLimit2 = new LimitSwitchold(10);
+		switchLimit3 = new LimitSwitchold(11);
+		switchLimit4 = new LimitSwitchold(12);
 		
-		Servo1 = new ServoMotor(3, 45, 5, 85);	// Pin, DefaultPos, MinPos, MaxPos
-		Servo2 = new ServoMotor(0, 15, 1, 30);	// Pin, DefaultPos, MinPos, MaxPos
+		ServoGripper = new ServoMotor(3, 5, 8, 81);	// Pin, DefaultPos, MinPos, MaxPos
+		ServoGuide = new ServoMotor(1,-10, -7, 68);	// Pin, DefaultPos, MinPos, MaxPos
+		ServoAngle = new ServoMotor(0, 15, 10, 30);
 		
-		dc1 = new DCMotor();
+		dcm = new DCMotorEncoder();
 		fqd = new TPU_FQD(true, 4);
 		
 		SCI sci = SCI.getInstance(SCI.pSCI2);
 		sci.start(115200, SCI.NO_PARITY, (short)8);
 
-		wifi = new RN131(sci.in , sci.out, new MPIOSM_DIO(resetPin, true));
+		wifi = new RN131(sci.in , sci.out, new MPIOSM_DIO(5, true));
 		
 	}
 
@@ -99,13 +99,19 @@ public class RealMain extends Task
 			System.out.println("Case 0	//Init");
 			wifiState = 310;
 			System.out.println("// Open Cube Guide");
+				ServoGuide.setPosition(-7);	//Working Pos
 			System.out.println("// Move Gripper down until Switch");
 			System.out.println("// Gripper middle pos");
+				ServoGripper.setPosition(30);	//Open
 			System.out.println("// Angle Gripper to working Pos");
+				ServoAngle.setPosition(13);	//Working Pos
 			if (true) {
 				wifi.cmd.writeCmd(400);
 			}
-			CmdInt.Type type = wifi.cmd.readCmd();
+			if (switchWhite.getSwitchInputs() == true) {
+					state = 1;	
+			}
+			/*CmdInt.Type type = wifi.cmd.readCmd();
 			if (type == CmdInt.Type.Cmd) {
 				message = wifi.cmd.getInt();
 				System.out.println(message);
@@ -115,7 +121,7 @@ public class RealMain extends Task
 					System.out.println("error Case 1");
 				}
 
-			}
+			}*/
 
 			// If Connection Yes && Tower Yes send Start (Wifi 400)
 			// if response 411
@@ -128,17 +134,23 @@ public class RealMain extends Task
 			System.out.println("Case 1	//Set Gripper Height");
 			//if 1 executuion height Towertop
 			//else execution height over Stack
-			state = 2;
+			if (switchWhite.getSwitchInputs() == true) {
+				state = 2;
+			}
+			
 		break;
 	
 		case 2:  //Check if Area Clear
 			System.out.println("Case 2	//Check if Area Clear");
 			// Wifi send 300
 			// if Response 316
-			state = 3;
+			//state = 3;
+			if (switchWhite.getSwitchInputs() == true) {
+				state = 3;
+			}
 			// else
-			state = 2;
-			wifiState = 314;
+			//state = 2;
+			//wifiState = 314;
 		break;
 		
 		case 3:		//drive forward and Grab or stack  

@@ -39,15 +39,16 @@ public class Main extends Task
 	boolean switch2State;
 	
 	
-	LimitSwitchold switch1;
-	LimitSwitchold switch2;
-	LimitSwitchold switch3;
-	LimitSwitchold switch4;
-	LimitSwitchold switch5;
-	LimitSwitchold switch6;
+	LimitSwitchold switchWhite;
+	LimitSwitchold switchRed;
+	LimitSwitchold switchLimit1;
+	LimitSwitchold switchLimit2;
+	LimitSwitchold switchLimit3;
+	LimitSwitchold switchLimit4;
 	
-	ServoMotor Servo1;
-	ServoMotor Servo2;
+	ServoMotor ServoGripper;
+	ServoMotor ServoGuide;
+	ServoMotor ServoAngle;
 	
 	TPU_FQD fqd;
 	
@@ -61,15 +62,16 @@ public class Main extends Task
 		switch1State = false;
 		switch2State = false;
 		
-		switch1 = new LimitSwitchold(7);
-		switch2 = new LimitSwitchold(8);
-		switch3 = new LimitSwitchold(9);
-		switch4 = new LimitSwitchold(10);
-		switch5 = new LimitSwitchold(11);
-		switch6 = new LimitSwitchold(12);
+		switchWhite = new LimitSwitchold(7);
+		switchRed = new LimitSwitchold(9);
+		switchLimit1 = new LimitSwitchold(11);
+		switchLimit2 = new LimitSwitchold(12);
+		switchLimit3 = new LimitSwitchold(10);
+		switchLimit4 = new LimitSwitchold(8);
 		
-		Servo1 = new ServoMotor(3, 45, 5, 85);	// Pin, DefaultPos, MinPos, MaxPos //Für Schwenkservo richtig bestimmt(-10;-7;68)! Für Greiferservo auch bestimmt(5;8;80)!
-		Servo2 = new ServoMotor(0, 15, 1, 30);	// Pin, DefaultPos, MinPos, MaxPos
+		ServoGripper = new ServoMotor(3, 5, 8, 81);	// Pin, DefaultPos, MinPos, MaxPos
+		ServoGuide = new ServoMotor(1,-10, -7, 68);	// Pin, DefaultPos, MinPos, MaxPos
+		ServoAngle = new ServoMotor(0, 15, 10, 30);
 		
 		dc1 = new DCMotor();
 		fqd = new TPU_FQD(true, 4);
@@ -81,15 +83,26 @@ public class Main extends Task
 	public void action(){
 		
 		
-		if (switch1.getSwitchInputs() == false) {
+		if (switchWhite.getSwitchInputs() == false) {
 			System.out.println("Switch1 false  ");
-			Servo1.setPosition(8);
-			//dc1.driveForward(1);
+			ServoGripper.setPosition(81);	//Open
+			ServoAngle.setPosition(13);	//Working Pos
 		}
-		if (switch1.getSwitchInputs() == true) {
+		if (switchWhite.getSwitchInputs() == true) {
 			System.out.println("Switch1 true  ");
-			Servo1.setPosition(81);
-			//dc1.stop();
+			ServoGripper.setPosition(8);	//Close
+			ServoAngle.setPosition(30);	//Deploy Pos
+		}
+		
+		
+		if (switchRed.getSwitchInputs() == false) {
+			System.out.println("Switch1 false  ");
+			ServoGuide.setPosition(68);	// Deploy pos
+		}
+		if (switchRed.getSwitchInputs() == true) {
+			System.out.println("Switch1 true  ");
+			ServoGuide.setPosition(-7);	//Working Pos
+			
 		}
 
 	
@@ -107,7 +120,7 @@ public class Main extends Task
 		
 		try{
 			Task t = new Main();
-			t.period = 500;
+			t.period = 50;
 			Task.install(t);
 		}catch(Exception e){
 			e.printStackTrace();

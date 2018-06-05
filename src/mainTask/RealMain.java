@@ -113,7 +113,7 @@ public class RealMain extends Task
 			if (switchWhite.getSwitchInputs() == true) {
 					state = 1;	
 			}
-			/*CmdInt.Type type = wifi.cmd.readCmd();
+			CmdInt.Type type = wifi.cmd.readCmd();
 			if (type == CmdInt.Type.Cmd) {
 				message = wifi.cmd.getInt();
 				System.out.println(message);
@@ -123,7 +123,7 @@ public class RealMain extends Task
 					System.out.println("error Case 1");
 				}
 
-			}*/
+			}
 
 			// If Connection Yes && Tower Yes send Start (Wifi 400)
 			// if response 411

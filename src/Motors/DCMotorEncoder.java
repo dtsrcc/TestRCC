@@ -28,35 +28,48 @@ public class DCMotorEncoder extends Task
 	private static final float gearRatio = 3249f/196f;
 	private static final float motorVoltage = 5f;
 	
-	private static SpeedController4DCMotor speedcon;
+	public static SpeedController4DCMotor speedcon;
 	
-	LimitSwitchold switch1;
-	LimitSwitchold switch2;
-	LimitSwitchold switch3;
+	LimitSwitchold switchLimit;
+
+	public static int state = 0;
 	
 	private TPU_FQD fqd;
 	
-	int overflow;
-	short oldpos = 0;
-	long realpos = 0;
-	long actualpos = 0;
-	int a = 0;
-	int b = 0;
+	public static boolean switchAvailable = false;
+	public static boolean zeroingWithSwitch = false;
+	
+	public static long targetPos = 0;
+
+	public static int overflow = 0;
+	public static short oldpos = 0;
+	public static short posOfset = 0;
+	public static long realpos;
+	public static long actualpos = 0;
+	public int a = 0;
+	public int b = 0;
+	
+	public DCMotorEncoder(int switchpin)
+	{
+		speedcon = new SpeedController4DCMotor(ts, TPU_PWM_CH0, TPU_PWM_CH1, TPU_A, TPU_FQD_A, TPU_A, ticksPerRotation, motorVoltage, gearRatio, kp, tn);
+		switchLimit = new LimitSwitchold(switchpin);
+		fqd = new TPU_FQD(true, 4);
+		switchAvailable = true;
+		speedcon.setDesiredSpeed(0);
+		realpos = 0;
+	}
 	
 	public DCMotorEncoder()
 	{
 		speedcon = new SpeedController4DCMotor(ts, TPU_PWM_CH0, TPU_PWM_CH1, TPU_A, TPU_FQD_A, TPU_A, ticksPerRotation, motorVoltage, gearRatio, kp, tn);
-		switch1 = new LimitSwitchold(7);
-		switch2 = new LimitSwitchold(8);
-		switch3 = new LimitSwitchold(9);
 		fqd = new TPU_FQD(true, 4);
-		
+		speedcon.setDesiredSpeed(0);
+		realpos = 0;
 	}
 	
 	
 	
-	public void action()
-	{
+	public void action(){
 		
 		short pos = fqd.getPosition();
 		
@@ -65,73 +78,94 @@ public class DCMotorEncoder extends Task
 			overflow++;
 		}
 		
-		realpos = overflow * 32767 * 2 + 32767 + pos;
+		realpos = overflow * 32767 * 2  + pos - posOfset; //+ 32767
 		
 		oldpos = pos;
 		
-		if(switch1.getSwitchInputs() == false)
-		{
-			speedcon.setDesiredSpeed(10);
-		}
-		
-		if(switch1.getSwitchInputs() == true)
-		{
-			speedcon.setDesiredSpeed(0);
-			
-			if(b == 0)
-			{
-				actualpos = realpos;
-				b++;
-			}
-
-		}
-				
-		if(switch2.getSwitchInputs() == true)
-		{
-			speedcon.setDesiredSpeed(-10);
-			
-			if(a == 0)
-			{
-				realpos = 0;
-				a++;
-			}
-
-			
-			if(realpos >= actualpos)
-			{
+		if (switchAvailable) {
+			if(switchLimit.getSwitchInputs() == true){
 				speedcon.setDesiredSpeed(0);
-				
+				if(zeroingWithSwitch) {
+					state=1;
+				}
 			}
 		}
 		
-		if(switch3.getSwitchInputs() == true)
-		{
-			a = 0;
-			b = 0;
-			actualpos = 0;
-			realpos = 0;
-		}
+        switch (state) {
+        
+        case 1:
+        	overflow = 0;
+        	posOfset =  fqd.getPosition();
+        	realpos = overflow * 32767 * 2 + fqd.getPosition() - posOfset; //+ 32767
+        	System.out.println(realpos);
+        	realpos = 0;
+        	state = 5;
+            break;
+            
+        case 2:  
+        	if ((targetPos+100)<realpos) {
+        		speedcon.setDesiredSpeed(-30);
+        	}else if ((targetPos-100)>realpos) {
+        		speedcon.setDesiredSpeed(30);
+        	}else {
+        		System.out.println("else");
+        		speedcon.setDesiredSpeed(0);
+        		state = 5;
+        	}
+            break;
+            
+        case 3:
+        	System.out.println("SetZeroWithSwitch");
+    		speedcon.setDesiredSpeed(-10); // Drehrichtung beachten
+    		zeroingWithSwitch = true;
+    		state = 5;
+        	break;
+            
+        // default:
+        	// break;
+    }
 		
-		//speedcon.setDesiredSpeed(10);
-		
-		//System.out.print("  ");
-
-
 		speedcon.run();
 		
 		
 	}
 
+	public boolean setZero() {
+		state = 1;
+		return true;
+	}
+	
+	public boolean setZeroSwitch() {
+		state = 3;
+		return true;
+	}
+	
+	public boolean setTargetPos(int target) {
+		state = 2;
+		targetPos = target;
+		
+		return true;
+	}
+	
+	public int getActualPos() {
+		int i = overflow * 32767 * 2  + fqd.getPosition() - posOfset; //+ 32767
+		System.out.println(i);
+		return i;
+		
+	}
+	
 	static
 	{
-		Task t = new DCMotorEncoder();
+		SCI sci1 = SCI.getInstance(SCI.pSCI1);
+		sci1.start(19200, SCI.NO_PARITY, (short)8);
+		System.out = new PrintStream(sci1.out);
+		
+		Task t = new DCMotorEncoder(12);	//Pin beachten
 		t.period = (int) (ts * 1000);
 		Task.install(t);
 		
 		
-		SCI sci1 = SCI.getInstance(SCI.pSCI1);
-		sci1.start(9600, SCI.NO_PARITY, (short)8);
-		System.out = new PrintStream(sci1.out);
+		
 		
 	}
 	

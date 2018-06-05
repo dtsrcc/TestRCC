@@ -58,6 +58,8 @@ public class Main extends Task
 	
 	long pos=0;
 	
+	
+	
 	public Main() throws Exception{
 		time = System.currentTimeMillis();
 		
@@ -75,9 +77,10 @@ public class Main extends Task
 		ServoGuide = new ServoMotor(1,-10, -7, 68);	// Pin, DefaultPos, MinPos, MaxPos
 		ServoAngle = new ServoMotor(0, 15, 10, 30);
 		
-		dcm = new DCMotorEncoder();
+		dcm = new DCMotorEncoder(12);
 		fqd = new TPU_FQD(true, 4);
 
+		
 		
 	}
 
@@ -85,7 +88,7 @@ public class Main extends Task
 	public void action(){
 		
 		
-		if (switchWhite.getSwitchInputs() == false) {
+		/*if (switchWhite.getSwitchInputs() == false) {
 			System.out.println("Switch1 false  ");
 			ServoGripper.setPosition(81);	//Open
 			ServoAngle.setPosition(13);	//Working Pos
@@ -105,24 +108,47 @@ public class Main extends Task
 			System.out.println("Switch1 true  ");
 			ServoGuide.setPosition(-7);	//Working Pos
 			
+		}*/
+		
+		
+		if(switchLimit1.getSwitchInputs() == false){
+			
 		}
+		if(switchLimit1.getSwitchInputs() == true){
+			dcm.setZeroSwitch();
+		}
+		
+		
+		/*if(switchLimit2.getSwitchInputs() == false){
 
-	
-	
-	
-	
-	
+		}
+		if(switchLimit2.getSwitchInputs() == true){
+			//System.out.println(dcm.getActualPos());
+			dcm.getActualPos();
+		}*/
+		
+		
+		//if(switchLimit3.getSwitchInputs() == false){
+			//dcm.setTargetPos(32767*5);
+		//}
+		if(switchLimit3.getSwitchInputs() == true){
+			dcm.setTargetPos(32767*2);
+		}
+		
+		
+		
+
 	}
 	
 	static
 	{
-		SCI sci1 = SCI.getInstance(SCI.pSCI1);
+		/*SCI sci1 = SCI.getInstance(SCI.pSCI1);
 		sci1.start(19200, SCI.NO_PARITY, (short)8);
-		System.out = new PrintStream(sci1.out);
+		System.out = new PrintStream(sci1.out);*/
 		
 		try{
 			Task t = new Main();
-			t.period = 50;
+			t.period = 10;
 			Task.install(t);
 		}catch(Exception e){
 			e.printStackTrace();

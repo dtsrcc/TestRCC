@@ -8,9 +8,9 @@ import ch.ntb.inf.deep.runtime.mpc555.driver.SCI;
 
 public class SpeedController extends Task {
 	protected static final boolean TPU_A = true;
-	protected static final int TPU_PWM_CH0 = 12;
-	protected static final int TPU_PWM_CH1 = 13;
-	protected static final int TPU_FQD_A = 4;
+	protected static final int TPU_PWM_CH0 = 8;
+	protected static final int TPU_PWM_CH1 = 9;
+	protected static final int TPU_FQD_A = 6;
 	
 	public int i=0;
 
@@ -20,8 +20,8 @@ public class SpeedController extends Task {
 	protected static final float tn = 0.01f;
 
 	/* Ticks per rotation from encoder datasheet */
-	protected static final int ticksPerRotation = 64;
-	protected static final float gearRatio = 3249f/196f;
+	protected static final int ticksPerRotation = 1024;
+	protected static final float gearRatio = 37f;
 	protected static final float motorVoltage = 5f;
 
 	static SpeedController4DCMotor motor;
@@ -36,7 +36,7 @@ public class SpeedController extends Task {
 	  motor = new SpeedController4DCMotor(ts, TPU_PWM_CH0, TPU_PWM_CH1, TPU_A, TPU_FQD_A, TPU_A, ticksPerRotation, motorVoltage, gearRatio, kp, tn);
 
 	  // Set desired speed
-	  motor.setDesiredSpeed(10);
+	  motor.setDesiredSpeed(-0.1f);
 
 	  // Initialize task
 	  Task t = new SpeedController();

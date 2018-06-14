@@ -1,11 +1,15 @@
 package Sensors;
 
+import java.io.PrintStream;
+
 import ch.ntb.inf.deep.runtime.mpc555.driver.MPIOSM_DIO;
-
+import ch.ntb.inf.deep.runtime.mpc555.driver.SCI;
 import ch.ntb.inf.deep.runtime.mpc555.driver.TPU_PWM;
+import ch.ntb.inf.deep.runtime.ppc32.Task;
 
 
-public class LimitSwitch {
+
+public class LimitSwitch extends Task {
 	
 	
 	boolean switch1 = false;
@@ -15,33 +19,42 @@ public class LimitSwitch {
 	private TPU_PWM pwm;
 	private MPIOSM_DIO Input;
 		
-	public LimitSwitch(int switchchannel, int pwmchannel) {
+	public LimitSwitch() {
 		
 		// LED PWM init
-		pwm = new TPU_PWM(true, 8, pwmchannel, 0); // LED OFF
-		Input = new MPIOSM_DIO(pwmchannel, false); // false = Input
+		
+		Input = new MPIOSM_DIO(10, false); // false = Input
 		
 	}
 
 	
 	
-	public void getSwitchInputs() {
+	public void action() {
 		
-		if (Input.get() != switch1) {
+		
 			switch1 = Input.get();
 			System.out.print("Switch 1 state is now: ");
 			System.out.println(Input.get());
-		}
 		
-		if (switch1 == true) {
-			pwm.update(10000000/ TPU_PWM.tpuTimeBase);
-		} else {
-			pwm.update(00000000/ TPU_PWM.tpuTimeBase);
-			}	
+		
+		
 		
 	}
 	
-	
+	static
+	{
+		SCI sci1 = SCI.getInstance(SCI.pSCI1);
+		sci1.start(19200, SCI.NO_PARITY, (short)8);
+		System.out = new PrintStream(sci1.out);
+		
+		
+			Task t = new LimitSwitch();
+			t.period = 500;
+			Task.install(t);
+		
+		
+
+	}
 	
 	
 }

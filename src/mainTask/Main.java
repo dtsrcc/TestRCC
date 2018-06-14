@@ -26,7 +26,7 @@ package mainTask;
 
 import java.io.PrintStream;
 
-import Motors.DCMotorEncoder;
+//import Motors.DCMotorEncoder;
 import Motors.ServoMotor;
 import Sensors.LimitSwitchold;
 import ch.ntb.inf.deep.runtime.mpc555.driver.SCI;
@@ -54,7 +54,7 @@ public class Main extends Task
 	
 	TPU_FQD fqd;
 	
-	DCMotorEncoder dcm;
+	//DCMotorEncoder dcm;
 	
 	long pos=0;
 	
@@ -77,7 +77,7 @@ public class Main extends Task
 		ServoGuide = new ServoMotor(1,-10, -7, 68);	// Pin, DefaultPos, MinPos, MaxPos
 		ServoAngle = new ServoMotor(0, 15, 10, 30);
 		
-		dcm = new DCMotorEncoder(12);
+		//dcm = new DCMotorEncoder();
 		fqd = new TPU_FQD(true, 4);
 
 		
@@ -115,7 +115,7 @@ public class Main extends Task
 			
 		}
 		if(switchLimit1.getSwitchInputs() == true){
-			dcm.setZeroSwitch();
+		//	dcm.setZeroSwitch();
 		}
 		
 		
@@ -132,7 +132,7 @@ public class Main extends Task
 			//dcm.setTargetPos(32767*5);
 		//}
 		if(switchLimit3.getSwitchInputs() == true){
-			dcm.setTargetPos(32767*2);
+		//	dcm.setTargetPos(32767*2);
 		}
 		
 		

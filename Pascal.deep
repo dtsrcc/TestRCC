@@ -10,7 +10,8 @@ project Testing {
 	programmertype = ntbMpc555UsbBdi;
 
 #	rootclasses = "KnightRider.KnightRider";
-	rootclasses = "fadeLED";
+#	rootclasses = "fadeLED";
 #	rootclasses = "DecoderBlub";
+#	
 
 }

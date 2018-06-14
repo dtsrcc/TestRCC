@@ -31,7 +31,7 @@ public class FqdDemo extends Task {
 		System.out = new PrintStream(sci1.out);
 	
 		Task t = new FqdDemo();
-		t.period = 2000;
+		t.period = 200;
 		Task.install(t);
 	}
 }

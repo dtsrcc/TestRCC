@@ -7,10 +7,10 @@ import ch.ntb.inf.deep.runtime.mpc555.driver.QADC_AIN;
 public class IRSensor {
 
 	// Analog Input
-	static QADC_AIN AIN = new QADC_AIN();
+	QADC_AIN AIN = new QADC_AIN();
 	// > 1000 -> kein Objekt, < 50 -> Objekt
 	
-	static boolean IRSensor = false;
+	boolean IRSensor = false;
 	 
 
 		public IRSensor() {
@@ -20,11 +20,11 @@ public class IRSensor {
 		}
 	
 		
-		public static boolean getSensorInput() {
+		public boolean getSensorInput() {
 			
-			if (QADC_AIN.read(true, 2) > 1000) {
+			if (QADC_AIN.read(true, 0) > 1000) {
 				IRSensor = false;
-			} else if (QADC_AIN.read(true, 2) < 50) {
+			} else if (QADC_AIN.read(true, 0) < 50) {
 				IRSensor = true;
 				}
 			

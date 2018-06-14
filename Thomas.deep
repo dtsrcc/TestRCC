@@ -20,5 +20,8 @@ project Testing {
 #	rootclasses = "Motors.FqdDemo";
 #	rootclasses = "Motors.SpeedController";
 	rootclasses = "mainTask.RealMain";
+#	rootclasses = "wifi.WifiReceiver";
+#	rootclasses = "wifi.WifiDemo";
+#	rootclasses = "Sensors.LimitSwitch";
 
 }

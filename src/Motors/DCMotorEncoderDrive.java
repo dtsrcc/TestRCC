@@ -116,7 +116,7 @@ public class DCMotorEncoderDrive extends Task
             break;
             
         case 3:
-        	speed = -5; // Drehrichtung beachten
+        	speed = -3; // Drehrichtung beachten
     		zeroingWithSwitch = true;
     		state = 5;
         	break;        	

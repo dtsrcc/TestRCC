@@ -103,16 +103,16 @@ public class DCMotorEncoderLift extends Task
 	            break;   
 	        case 2:  
 	        	if ((targetPos+100)<realpos) {
-	        		speed = -1;
+	        		speed = -15;
 	        	}else if ((targetPos-100)>realpos) {
-	        		speed = 1;
+	        		speed = 15;
 	        	}else {
 	        		speed = 0;
 	        		state = 5;
 	        	}
 	            break;  
 	        case 3:
-	        	speed = 1; // Drehrichtung beachten
+	        	speed = 9; // Drehrichtung beachten
 	    		zeroingWithSwitch = true;
 	    		state = 5;
 	        	break;        	

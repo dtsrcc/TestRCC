@@ -106,9 +106,9 @@ public class DCMotorEncoderDrive extends Task
             
         case 2:  
         	if ((targetPos+100)<realpos) {
-        		speed = -2;
+        		speed = -4;
         	}else if ((targetPos-100)>realpos) {
-        		speed = 2;
+        		speed = 4;
         	}else {
         		speed = 0;
         		state = 5;
@@ -116,7 +116,7 @@ public class DCMotorEncoderDrive extends Task
             break;
             
         case 3:
-        	speed = -3; // Drehrichtung beachten
+        	speed = -5; // Drehrichtung beachten
     		zeroingWithSwitch = true;
     		state = 5;
         	break;        	
@@ -159,8 +159,8 @@ public class DCMotorEncoderDrive extends Task
 		
 	}
 	
-	public void setSpeed(){
-		speed = 0;
+	public boolean getSwitchDrive(){
+		return switchLimit.getSwitchInputs();
 	}
 	
 	//********************************************************************************************************************************************//

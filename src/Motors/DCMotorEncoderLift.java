@@ -34,6 +34,8 @@ public class DCMotorEncoderLift extends Task
 	public static boolean zeroingWithSwitch = false;
 	public static boolean switchIsEnabled = false;
 	
+	public boolean atTarget;
+	
 	public static long targetPos = 0;
 
 	public static int  overflow = 0;
@@ -73,6 +75,7 @@ public class DCMotorEncoderLift extends Task
 			
 	        if((switchLimitBottom.getSwitchInputs() == true) && (switchIsEnabled == false)){
 	        	speed = 0;
+	        	atTarget = true;
 				switchIsEnabled = true;
 				if(zeroingWithSwitch == true) {
 					state = 1;
@@ -86,6 +89,7 @@ public class DCMotorEncoderLift extends Task
 	        
 	        if((switchLimitTop.getSwitchInputs() == true) && (switchIsEnabled == false)){
 	        	speed = 0;
+	        	atTarget = true;
 				switchIsEnabled = true;
 			}
 	        else if (switchLimitTop.getSwitchInputs() == false) {
@@ -103,16 +107,20 @@ public class DCMotorEncoderLift extends Task
 	            break;   
 	        case 2:  
 	        	if ((targetPos+100)<realpos) {
-	        		speed = -15;
+	        		speed = -20;
+	        		atTarget = false;
 	        	}else if ((targetPos-100)>realpos) {
-	        		speed = 15;
+	        		speed = 20;
+	        		atTarget = false;
 	        	}else {
 	        		speed = 0;
+	        		atTarget = true;
 	        		state = 5;
 	        	}
 	            break;  
 	        case 3:
-	        	speed = 9; // Drehrichtung beachten
+	        	speed = 15; // Drehrichtung beachten
+	        	atTarget = false;
 	    		zeroingWithSwitch = true;
 	    		state = 5;
 	        	break;        	
@@ -120,6 +128,7 @@ public class DCMotorEncoderLift extends Task
 			
 	        if((switchLimitTop.getSwitchInputs() == true) && (speed <=0)) {
 	        	speed = 0;
+	        	atTarget = true;
 	        }
 	        
 	        speedcon.setDesiredSpeed(speed);
@@ -156,10 +165,8 @@ public class DCMotorEncoderLift extends Task
 		}
 			
 		
-			
-		
-		public void setSpeed(){
-			speed = 0;
+		public boolean motorAtTarget(){
+			return atTarget;
 		}
 		
 		//********************************************************************************************************************************************//

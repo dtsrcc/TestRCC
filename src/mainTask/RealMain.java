@@ -22,6 +22,14 @@
  * 		Encoder2 TPU-A	7
  */
 
+
+/*
+ * Speed Optimization && drive Optimization*
+ * slow servo angle*
+ * stacking height
+ * IR Sensor, not drive fwd
+ */
+
 package mainTask;
 
 import java.io.PrintStream;
@@ -40,17 +48,17 @@ public class RealMain extends Task
 {
 	long time;
 	
+	boolean useWifi=false;
+	
 	boolean switch1State;
 	boolean switch2State;
 	
 	private RN131 wifi;	
 	
+	int timeCounter = 0;
+	
 	LimitSwitchold switchWhite;
 	LimitSwitchold switchRed;
-	/*LimitSwitchold switchLimit1;
-	LimitSwitchold switchLimit2;
-	LimitSwitchold switchLimit3;
-	LimitSwitchold switchLimit4;*/
 	
 	public static boolean switchIsEnabled = false;
 	
@@ -71,23 +79,22 @@ public class RealMain extends Task
 	public boolean case3 = false;
 	public boolean alreadyTookBeacon = false;
 	public int counter = 0;
+	public int counterCase7 = 0;
 	
 	public RealMain() throws Exception{
 		time = System.currentTimeMillis();
 		
 		switch1State = false;
+		
+		
 		switch2State = false;
 		
 		switchWhite = new LimitSwitchold(9);
 		switchRed = new LimitSwitchold(7);
-		//switchLimit1 = new LimitSwitchold(8);
-		// switchLimit2 = new LimitSwitchold(10);
-		//switchLimit3 = new LimitSwitchold(11);
-		//switchLimit4 = new LimitSwitchold(12);
 		
 		ServoGripper = new ServoMotor(3, 5, 8, 81);	// Pin, DefaultPos, MinPos, MaxPos
 		ServoGuide = new ServoMotor(1,-10, -20, 66);	// Pin, DefaultPos, MinPos, MaxPos
-		ServoAngle = new ServoMotor(0, 15, 8, 30);
+		ServoAngle = new ServoMotor(0, 15, 9, 30);
 		
 		dcmLift = new DCMotorEncoderLift();  // Pins for testboard
 		dcmDrive = new DCMotorEncoderDrive(); //switchpin, int fqdpin, int pwm1, int pwm2
@@ -103,315 +110,334 @@ public class RealMain extends Task
 
 	
 	public void action(){
-			
-	switch (state) {
-		case 0:  //Init
-			System.out.print("RealposLift = : ");
-			System.out.println(dcmLift.getActualPos());
-			if (init == false) {
-				init = true;
-				
-				wifiState = 310;
-				System.out.println("Case 0	//Init");
-				
-				ServoGuide.setPosition(-14);	//Working Pos
-				System.out.println("// Open Cube Guide");
-				
-				dcmLift.setZeroSwitch();
-				System.out.println("// Move Gripper down until Switch");
-
-				ServoAngle.setPosition(8);	//Working Pos.
-				System.out.println("// AngleServo to working Pos");
-				
-				ServoGripper.setPosition(30);	//Open
-				System.out.println("// Open Gripper");
-			}
-			if (true) {
-				wifi.cmd.writeCmd(400);
-			}
-			
-			if ((switchWhite.getSwitchInputs() == true) && (switchIsEnabled == false)){
-				state = 9;
-				switchIsEnabled = true;
-			} else if (switchWhite.getSwitchInputs() == false) {
-				 switchIsEnabled = false;
-				}
-			
-			CmdInt.Type type = wifi.cmd.readCmd();
-			if (type == CmdInt.Type.Cmd) {
-				message = wifi.cmd.getInt();
-				System.out.println(message);
-				if (message == 411) {
-					state = 9;	
-				} else {
-					System.out.println("error Case 1");
-				}
-
-			}
-
-			// If Connection Yes && Tower Yes send Start (Wifi 400)
-			// if response 411
-			//state = 1;	
-			// else Wait (Ask for Start)
-			//wifiState = 314;
-			
-		break;
+		if (useWifi) {
+			timeCounter++;
+		}
 		
-		case 1:  //Set Gripper Height
-			System.out.print("RealposLift = : ");
-			System.out.println(dcmLift.getActualPos());
+	
+	if((switchRed.getSwitchInputs() == true) && (switch1State == false)) {
+		useWifi = true;
+		switch1State = true;
+	}else if ((switchWhite.getSwitchInputs() == true) && (switch1State == false)) {
+		useWifi = false;
+		switch1State = true;
+	}
+		
+		
+		
+	
+	if(switch1State == true) {
+					
+		switch (state) {
+			case 0:  //Init
+				System.out.print("RealposLift = : ");
+				System.out.println(dcmLift.getActualPos());
+				if (init == false) {
+					init = true;
+					
+					wifiState = 310;
+					System.out.println("Case 0	//Init");
+					
+					ServoGuide.setPosition(-14);	//Working Pos
+					System.out.println("// Open Cube Guide");
+					
+					dcmLift.setZeroSwitch();
+					System.out.println("// Move Gripper down until Switch");
+	
+					ServoAngle.setPosition(10);	//Working Pos.
+					System.out.println("// AngleServo to working Pos");
+					
+					ServoGripper.setPosition(30);	//Open
+					System.out.println("// Open Gripper");
+					
+				}
 
-			if (counter == 1) {
-				dcmLift.setTargetPos(0); 
-				System.out.println("Case 1	//Set Gripper Height Towertop");
-			} else if (counter == 2){
-				dcmLift.setTargetPos(-1300000); // WERT NOCH ANPASSEN FÜR GENAUE HÖHE DER STACKING POSITION
-				System.out.println("Case 1	//Set Gripper Height First Position with Beacon");
+				if (!useWifi) {
+					if ((switchWhite.getSwitchInputs() == true) && (switchIsEnabled == false)){
+						state = 9;
+						switchIsEnabled = true;
+					} else if (switchWhite.getSwitchInputs() == false) {
+						 switchIsEnabled = false;
+					}
+				}else if (useWifi) {
+					if(useWifi) {
+						wifi.cmd.writeCmd(400);
+					}
+					CmdInt.Type type = wifi.cmd.readCmd();
+					if (type == CmdInt.Type.Cmd) {
+						message = wifi.cmd.getInt();
+						System.out.println(message);
+						if (message == 411) {
+							state = 9;	
+						} else {
+							System.out.println("error Case 1");
+						}
+		
+					}
+				}
+				
+			break;
+			
+			
+			
+			
+			case 1:  //Set Gripper Height
+				System.out.print("RealposLift = : ");
+				System.out.println(dcmLift.getActualPos());
+	
+				if (counter == 1) {
+					dcmLift.setTargetPos(0); 
+					System.out.println("Case 1	//Set Gripper Height Towertop");
+				} else if (counter == 2){
+					dcmLift.setTargetPos(-1300000); // WERT NOCH ANPASSEN FÜR GENAUE HÖHE DER STACKING POSITION
+					System.out.println("Case 1	//Set Gripper Height First Position with Beacon");
 				} else if (counter >= 3) {
 					dcmLift.setTargetPos(-2700000); // WERT NOCH ANPASSEN FÜR GENAUE HÖHE DER STACKING POSITION
 					System.out.println("Case 1	//Set Gripper Height Second Position");
 				}
-			
-			
-			wifiState = 314;
-			
-			state = 2;
 				
-			
-			// If wifiState == 310 (Init)
-			// move Gripper to TowerPosition
-			// else move Gripper to Stacking Position
-			// wifiState = 314
-			// state 2;
-				
-			
-		break;
-	
-		case 2:  //Check if Area Clear
-			
-			System.out.println("Case 2	//Check if Area Clear");
-			System.out.print("RealposLift = : ");
-			System.out.println(dcmLift.getActualPos());
-			
-			wifi.cmd.writeCmd(300);
-			CmdInt.Type type1 = wifi.cmd.readCmd();
-			if (type1 == CmdInt.Type.Cmd) {
-				message = wifi.cmd.getInt();
-				System.out.println(message);
-				if (message == 316) {
-					state = 3;	
-				} else {
-					System.out.println("Waiting for clear area");
-					wifi.cmd.writeCmd(314);
-					state = 2;
-					
-				}
-			}
-
-			
-			if ((switchWhite.getSwitchInputs() == true) && (switchIsEnabled == false)){
-				state = 3;
-				switchIsEnabled = true;
-			} else if (switchWhite.getSwitchInputs() == false) {
-				 switchIsEnabled = false;
-				}
-			
-			// If Area clear (send Wifi 300)
-			// if response 316
-			// state = 3;
-			// else Wait (for clear Area)
-			// wifiState = 314; (stays 314)
-			
-		break;
+				state = 2;	
+			break;
 		
-		case 3:		//drive forward
-			
-			System.out.print("RealposDrive = : ");
-			System.out.println(dcmDrive.getActualPos());
-
-			if(case3 == false) {
-				case3 = true;
-				
-				System.out.println("Case 3	// Drive forward");
-				
-				dcmDrive.setZeroSwitch();
-				wifiState = 311;	
-			}
-			
-			wifi.cmd.writeCmd(wifiState);
 			
 			
-			if ((switchWhite.getSwitchInputs() == true) && (switchIsEnabled == false)){
-				state = 4;
-				switchIsEnabled = true;
-			} else if (switchWhite.getSwitchInputs() == false) {
-				 switchIsEnabled = false;
+			
+			case 2:		//******************************************************Case 2 check if area clear*************************************************************************
+				if(useWifi) {
+					wifiState = 314;	
 				}
-			
-		break;	
-			
-		case 4: // Grab or stack
-			
-			System.out.print("RealposLift= : ");
-			System.out.println(dcmLift.getActualPos());
-			
-			case3 = false;
-			
-			if (counter == 1) { //&& dcmDrive.getActualPos() < 150 && dcmDrive.getActualPos() > - 150) {
 				
-				ServoGripper.setPosition(8);	// Close Gripper // NOT SURE
-				System.out.println("Case 4 // Close Gripper");
+				System.out.println("Case 2	//Check if Area Clear");
 				
-				dcmLift.setTargetPos(-200000);
-				System.out.println("Case 4 // Lift Tower");
-				
-				wifiState = 315;
-			} else if (counter == 2 && dcmLift.getActualPos() < -1200000 ) {
-				dcmLift.setTargetPos(-900000); // 
-				System.out.println("Case 3 // Stacking");
-				
-				wifiState = 312;
+				if (!useWifi) {
+					if ((switchWhite.getSwitchInputs() == true) && (switchIsEnabled == false)){
+						state = 3;
+						switchIsEnabled = true;
+					} else if (switchWhite.getSwitchInputs() == false) {
+						 switchIsEnabled = false;
+					}
+				}else if (useWifi) {
+					if(useWifi) {
+						wifi.cmd.writeCmd(300);
+					}
+					CmdInt.Type type = wifi.cmd.readCmd();
+					if (type == CmdInt.Type.Cmd) {
+						message = wifi.cmd.getInt();
+						System.out.println(message);
+						if (message == 316) {
+							state = 3;	
+						} else {
+							System.out.println("Waiting for clear area");
+							wifi.cmd.writeCmd(wifiState);
+							state = 2;
+						}
+		
+					}
+				}
+			break;
 			
+			case 3:		//******************************************************Case 3 drive forward*************************************************************************
+				if(case3 == false) {
+					case3 = true;
+					System.out.println("Case 3	// Drive forward");
+					dcmDrive.setZeroSwitch();
+					if(useWifi) {
+						wifiState = 311;	
+					}	
+				}
+				
+				if (useWifi && dcmDrive.getSwitchDrive() == true) {
+					state = 4;
+				}
+				
+				if(useWifi) {
+					wifi.cmd.writeCmd(wifiState);
+				}
+				
+				if (!useWifi) {
+					if ((switchWhite.getSwitchInputs() == true) && (switchIsEnabled == false)){
+						state = 4;
+						switchIsEnabled = true;
+					}else if (switchWhite.getSwitchInputs() == false) {
+						 switchIsEnabled = false;
+					}
+				}
+			break;	
+				
+			
+			
+			
+			case 4:		//******************************************************Case 4 grab or stack*************************************************************************
+				System.out.print("RealposLift= : ");
+				System.out.println(dcmLift.getActualPos());
+				
+				case3 = false;
+				
+				if (counter == 1) {
+					ServoGripper.setPosition(8);	// Close Gripper 
+					System.out.println("Case 4 // Close Gripper");
+					
+					dcmLift.setTargetPos(-200000);
+					System.out.println("Case 4 // Lift Tower");
+					state = 5;
+					
+				} else if (counter == 2 && dcmLift.getActualPos() < -1200000 ) {
+					dcmLift.setTargetPos(-900000); // 
+					System.out.println("Case 3 // Stacking");
+					wifiState = 312;
+				
 				} else if (counter >= 3 && dcmLift.getActualPos() < -2600000) {
 					dcmLift.setTargetPos(-2200000); // 
 					System.out.println("Case 3 // Stacking");
 				}
+		
 				
-				// state = 4;
-	
-			if (dcmLift.getActualPos() > -905000 && dcmLift.getActualPos() < - 895000) {
-				ServoGripper.setPosition(30);	// Open Gripper
-				System.out.println("Case 3 // Open Gripper");
-				
-				dcmLift.setZeroSwitch();
-				System.out.println("Case 3 // Lower grabbing position");
-				
-			}
-			
-			if (dcmLift.getActualPos() > -2205000 && dcmLift.getActualPos() < - 2195000) {
-				ServoGripper.setPosition(30);	// Open Gripper
-				System.out.println("Case 3 // Open Gripper");
-				
-				dcmLift.setZeroSwitch();
-				System.out.println("Case 3 // Lower grabbing position");
-				
-			}
-			
-			
-			if (dcmLift.getActualPos() < 1000 && dcmLift.getActualPos() > -1000) {
-				ServoGripper.setPosition(8);	// Close Gripper
-				System.out.println("Case 3 // Close Gripper");
-				
-				dcmLift.setTargetPos(-200000);
-				System.out.println("Case 3 // Lift package");
-				
-			}
-			
-			
-			
-			
-			if ((switchWhite.getSwitchInputs() == true) && (switchIsEnabled == false)){
-				state = 5;
-				switchIsEnabled = true;
-			} else if (switchWhite.getSwitchInputs() == false) {
-				 switchIsEnabled = false;
+				if (dcmLift.getActualPos() > -905000 && dcmLift.getActualPos() < - 895000) {
+					ServoGripper.setPosition(30);	// Open Gripper
+					System.out.println("Case 3 // Open Gripper");
+					
+					dcmLift.setZeroSwitch();
+					System.out.println("Case 3 // Lower grabbing position");
 				}
+				
+				
+				if (dcmLift.getActualPos() > -2205000 && dcmLift.getActualPos() < - 2195000) {
+					ServoGripper.setPosition(30);	// Open Gripper
+					System.out.println("Case 3 // Open Gripper");
+					
+					dcmLift.setZeroSwitch();
+					System.out.println("Case 3 // Lower grabbing position");
+				}
+				
+				if (dcmLift.getActualPos() < 1000 && dcmLift.getActualPos() > -1000) {
+					ServoGripper.setPosition(8);	// Close Gripper
+					System.out.println("Case 3 // Close Gripper");
+					
+					dcmLift.setTargetPos(-200000);
+					System.out.println("Case 3 // Lift package");
+					state = 5;					
+				}
+				
+				if (!useWifi) {
+					if ((switchWhite.getSwitchInputs() == true) && (switchIsEnabled == false)){
+						state = 5;
+						switchIsEnabled = true;
+					} else if (switchWhite.getSwitchInputs() == false) {
+						 switchIsEnabled = false;
+					}
+				}
+			break;
 			
 			
 			
-			//if 1 execution Grab Tovertop, lift
-			//state = 4;	
-			//else Stack, Open, down, Close, lift
-			//state = 4;
-			
-			//Set WifiState 311
 			
 			
-			
-			//Set WifiState 311
-			
-			
-			
-			
-			
-			
-			// If wifiState == 310 (Init)
-			// move Gripper to TowerPosition
-			// else move Gripper to Stacking Position
-			// wifiState = 314
-			// state 2;
-			
-		break;
-		
-		case 5:  //drive bwd
-			
-			alreadyTookBeacon = true;
-			
-			System.out.println("Case 5	//drive bwd");
-			
-			dcmDrive.setTargetPos(200000);
+			case 5:		//******************************************************Case 5 drive backwards*************************************************************************
+				
+				if(useWifi) {
+					wifiState = 315;	
+				}
+				alreadyTookBeacon = true;
+				System.out.println("Case 5	//drive bwd");
+				dcmDrive.setTargetPos(600000);
+				wifiState = 313;
+				
+				if (dcmDrive.getActualPos() < 602000 && dcmDrive.getActualPos() > 598000) {
+					state = 6;
+				}
+			break;
 			
 			
-			wifiState = 313;
-			//drive bwd time or distance
 			
-			if (dcmDrive.getActualPos() < 202000 && dcmDrive.getActualPos() > 198000) {
-				state = 9;
+			
+			case 6:  //******************************************************Case Decide Time*************************************************************************
+				System.out.println("Case 6	//decide time");
+				
+				if(useWifi) {
+					wifiState = 314;	
+				}
+				
+				if (!useWifi) {
+					if ((switchWhite.getSwitchInputs() == true) && (switchIsEnabled == false)){
+						state = 9;
+						switchIsEnabled = true;
+					} else if (switchRed.getSwitchInputs() == true) {
+						state = 7;
+						switchIsEnabled = true;
+					} else if (switchWhite.getSwitchInputs() == false) {
+						switchIsEnabled = false;
+					} else if (switchRed.getSwitchInputs() == false) {
+						switchIsEnabled = false;
+					}
+				}
+				
+				if (useWifi) {
+					if(timeCounter <= (100*4)) {// *4 depends on t.period
+						state = 9;
+					}else {
+						state = 7;
+					}
+				}
+			break;
+			
+			
+			
+			
+			case 7:		//******************************************************Case 7 deploy*************************************************************************
+				System.out.println("Case 6	//deploy");
+				counterCase7++;
+				if(useWifi) {
+					wifiState = 316;	
+					wifi.cmd.writeCmd(wifiState);
+				}
+				
+				if (counterCase7 >= 20) {		
+					state = 8;
+				}else if (counterCase7 >= 24) {
+					dcmDrive.setTargetPos(800000);
+					ServoAngle.setPosition(10);	//work Pos//10
+				}else if (counterCase7 >= 20) {
+					ServoGripper.setPosition(45);//Open wide
+				}else if (counterCase7 >= 16) {
+					ServoGripper.setPosition(15);	//Open small
+				}else if (counterCase7 >= 4) {
+					ServoAngle.setPosition(7 + counterCase7);	//deploy pos//26
+				}else{
+					ServoGuide.setPosition(66);	//deploy	//Close Cube Guide
+				}
+				
+			break;
+			
+			case 8:		//******************************************************Case 8 finish*************************************************************************  
+				System.out.println("Case 7	//Finish");
+				if(useWifi) {
+					wifiState = 318;	
+					wifi.cmd.writeCmd(wifiState);
+				}
+
+			break;
+			
+			case 9:		//******************************************************Case 9 counter*************************************************************************
+				counter++;
+				state = 1;
+			break;
+			
 			}
-			
-			
-		break;
-		
-		case 6:  //decide time
-			System.out.println("Case 5	//decide time");
-			//if enough time set WifiState 314
-			wifiState = 314;
-			state = 1;
-			//else
-			state = 1;
-		break;
-		
-		case 7:  //deploy
-			System.out.println("Case 6	//deploy");
-			wifiState = 316;
-			//Lower Gripper
-			//Close Cube Guide
-			//Angle to deploy pos
-			//Open Gripper full
-			//Angle Gripper to working Pos
-			wifiState = 317;
-			//drive bwd distance
-			state = 7;
-		break;
-		
-		case 8:		//Finish  
-			System.out.println("Case 7	//Finish");
-			wifiState = 318;
-		break;
-		
-		case 9:
-			counter++;
-			state = 1;
-		break;
-		
 		}
-	
 	}
 	
-	static
-	{
+	static{
 		SCI sci1 = SCI.getInstance(SCI.pSCI1);
 		sci1.start(19200, SCI.NO_PARITY, (short)8);
 		System.out = new PrintStream(sci1.out);
 		
 		try{
 			Task t = new RealMain();
-			t.period = 300;
+			t.period = 250;
 			Task.install(t);
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-
 	}
 	
 }

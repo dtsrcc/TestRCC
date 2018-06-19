@@ -88,7 +88,7 @@ public class DCMotorEncoderDrive extends Task
         
         
          //IR Sensor
-        if((sensor.getSensorInput() == true) && (sensorIsEnabled == false) && (switchIsEnabled == false)){
+        if((sensor.getSensorInput() == true) && (sensorIsEnabled == false) && (switchIsEnabled == false) && ((speed < 0) || (speed > 0))){
         	speed = -1;
         	sensorIsEnabled = true;	
 		} else if (sensor.getSensorInput() == false) {
@@ -106,9 +106,9 @@ public class DCMotorEncoderDrive extends Task
             
         case 2:  
         	if ((targetPos+100)<realpos) {
-        		speed = -4;
+        		speed = -8;
         	}else if ((targetPos-100)>realpos) {
-        		speed = 4;
+        		speed = 8;
         	}else {
         		speed = 0;
         		state = 5;
@@ -116,7 +116,7 @@ public class DCMotorEncoderDrive extends Task
             break;
             
         case 3:
-        	speed = -5; // Drehrichtung beachten
+        	speed = -8; // Drehrichtung beachten
     		zeroingWithSwitch = true;
     		state = 5;
         	break;        	

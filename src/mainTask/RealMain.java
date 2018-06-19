@@ -27,7 +27,7 @@
  * Speed Optimization && drive Optimization*
  * slow servo angle*
  * stacking height
- * IR Sensor, not drive fwd
+ * IR Sensor, not drive fwd*
  */
 
 package mainTask;
@@ -47,6 +47,7 @@ import ch.ntb.inf.deep.runtime.mpc555.driver.RN131;
 public class RealMain extends Task
 {
 	long time;
+	long setTimeStamp = 0;
 	
 	boolean useWifi=false;
 	
@@ -78,6 +79,7 @@ public class RealMain extends Task
 	public boolean init = false;
 	public boolean case3 = false;
 	public boolean alreadyTookBeacon = false;
+	public boolean truevariable = true;
 	public int counter = 0;
 	public int counterCase7 = 0;
 	
@@ -92,9 +94,9 @@ public class RealMain extends Task
 		switchWhite = new LimitSwitchold(9);
 		switchRed = new LimitSwitchold(7);
 		
-		ServoGripper = new ServoMotor(3, 5, 8, 81);	// Pin, DefaultPos, MinPos, MaxPos
+		ServoGripper = new ServoMotor(3, 5, 6, 81);	// Pin, DefaultPos, MinPos, MaxPos
 		ServoGuide = new ServoMotor(1,-10, -20, 66);	// Pin, DefaultPos, MinPos, MaxPos
-		ServoAngle = new ServoMotor(0, 15, 9, 30);
+		ServoAngle = new ServoMotor(0, 15, 7, 30);
 		
 		dcmLift = new DCMotorEncoderLift();  // Pins for testboard
 		dcmDrive = new DCMotorEncoderDrive(); //switchpin, int fqdpin, int pwm1, int pwm2
@@ -110,9 +112,7 @@ public class RealMain extends Task
 
 	
 	public void action(){
-		if (useWifi) {
-			timeCounter++;
-		}
+		
 		
 	
 	if((switchRed.getSwitchInputs() == true) && (switch1State == false)) {
@@ -144,7 +144,7 @@ public class RealMain extends Task
 					dcmLift.setZeroSwitch();
 					System.out.println("// Move Gripper down until Switch");
 	
-					ServoAngle.setPosition(10);	//Working Pos.
+					ServoAngle.setPosition(8);	//Working Pos.
 					System.out.println("// AngleServo to working Pos");
 					
 					ServoGripper.setPosition(30);	//Open
@@ -152,7 +152,7 @@ public class RealMain extends Task
 					
 				}
 
-				if (!useWifi) {
+				if ((!useWifi) && (switchRed.getSwitchInputs() == true)) {
 					if ((switchWhite.getSwitchInputs() == true) && (switchIsEnabled == false)){
 						state = 9;
 						switchIsEnabled = true;
@@ -184,6 +184,10 @@ public class RealMain extends Task
 			case 1:  //Set Gripper Height
 				System.out.print("RealposLift = : ");
 				System.out.println(dcmLift.getActualPos());
+				
+				if (useWifi) {
+					timeCounter++;
+				}
 	
 				if (counter == 1) {
 					dcmLift.setTargetPos(0); 
@@ -191,6 +195,7 @@ public class RealMain extends Task
 				} else if (counter == 2){
 					dcmLift.setTargetPos(-1300000); // WERT NOCH ANPASSEN FÜR GENAUE HÖHE DER STACKING POSITION
 					System.out.println("Case 1	//Set Gripper Height First Position with Beacon");
+					// 18.5mm differenz von oberen zu unterem Stein 
 				} else if (counter >= 3) {
 					dcmLift.setTargetPos(-2700000); // WERT NOCH ANPASSEN FÜR GENAUE HÖHE DER STACKING POSITION
 					System.out.println("Case 1	//Set Gripper Height Second Position");
@@ -237,9 +242,13 @@ public class RealMain extends Task
 			break;
 			
 			case 3:		//******************************************************Case 3 drive forward*************************************************************************
+				ServoAngle.setPosition(8);	//Working Pos.
+				System.out.println("// AngleServo to working Pos");
+				
 				if(case3 == false) {
 					case3 = true;
 					System.out.println("Case 3	// Drive forward");
+					ServoGuide.setPosition(-14);	//Working Pos
 					dcmDrive.setZeroSwitch();
 					if(useWifi) {
 						wifiState = 311;	
@@ -270,52 +279,87 @@ public class RealMain extends Task
 			case 4:		//******************************************************Case 4 grab or stack*************************************************************************
 				System.out.print("RealposLift= : ");
 				System.out.println(dcmLift.getActualPos());
+				time = System.currentTimeMillis();
+				System.out.println("time = : ");
+				System.out.println(time);
+				
+				ServoAngle.setPosition(8);	//Working Pos.
+				System.out.println("// AngleServo to working Pos");
 				
 				case3 = false;
 				
 				if (counter == 1) {
-					ServoGripper.setPosition(8);	// Close Gripper 
+					ServoGripper.setPosition(6);	// Close Gripper 
 					System.out.println("Case 4 // Close Gripper");
+					if (truevariable) {
+						setTimeStamp = time;
+						truevariable = false;
+					}
 					
+					if (time >= setTimeStamp + 100000) { // 100000 = 0.1s
 					dcmLift.setTargetPos(-200000);
 					System.out.println("Case 4 // Lift Tower");
+					ServoGuide.setPosition(66);	//deploy	//Close Cube Guide
 					state = 5;
+					truevariable = true;
+					}
 					
-				} else if (counter == 2 && dcmLift.getActualPos() < -1200000 ) {
-					dcmLift.setTargetPos(-900000); // 
-					System.out.println("Case 3 // Stacking");
+				} else if (counter == 2 && dcmLift.getActualPos() < -1250000 ) {
+					dcmLift.setTargetPos(-500000); // 
+					System.out.println("Case 3 // Stacking with beacon");
+					if (truevariable) {
+						setTimeStamp = time;
+						truevariable = false;
+					}
 					wifiState = 312;
+					System.out.println("time = : ");
+					System.out.println(time);
+					System.out.println("SetTimeStamp = : ");
+					System.out.println(setTimeStamp);
 				
 				} else if (counter >= 3 && dcmLift.getActualPos() < -2600000) {
-					dcmLift.setTargetPos(-2200000); // 
-					System.out.println("Case 3 // Stacking");
-				}
+					dcmLift.setTargetPos(-1900000); // 
+					System.out.println("Case 3 // Stacking with package");
+					if (truevariable) {
+						setTimeStamp = time;
+						truevariable = false;
+					}
+					
+					}
 		
 				
-				if (dcmLift.getActualPos() > -905000 && dcmLift.getActualPos() < - 895000) {
+				
+				if ((dcmLift.getActualPos() > -505000) && (dcmLift.getActualPos() < - 495000) && (time >= setTimeStamp + 3000000)) {
 					ServoGripper.setPosition(30);	// Open Gripper
 					System.out.println("Case 3 // Open Gripper");
-					
+						
 					dcmLift.setZeroSwitch();
 					System.out.println("Case 3 // Lower grabbing position");
 				}
+							
 				
 				
-				if (dcmLift.getActualPos() > -2205000 && dcmLift.getActualPos() < - 2195000) {
+				if (dcmLift.getActualPos() > -1905000 && dcmLift.getActualPos() < - 1895000 && time >= setTimeStamp + 3000000)  {
 					ServoGripper.setPosition(30);	// Open Gripper
 					System.out.println("Case 3 // Open Gripper");
 					
-					dcmLift.setZeroSwitch();
-					System.out.println("Case 3 // Lower grabbing position");
+					dcmLift.setTargetPos(-2700000); //
+					
+					state = 11;
+					
+//					dcmLift.setZeroSwitch();
+//					System.out.println("Case 3 // Lower grabbing position");
 				}
 				
-				if (dcmLift.getActualPos() < 1000 && dcmLift.getActualPos() > -1000) {
-					ServoGripper.setPosition(8);	// Close Gripper
+				if (dcmLift.getActualPos() < 1000 && dcmLift.getActualPos() > -1000)  { // && time >= timestamp + 1000000{
+					ServoGripper.setPosition(6);	// Close Gripper
 					System.out.println("Case 3 // Close Gripper");
+					ServoGuide.setPosition(66);	//deploy	//Close Cube Guide
 					
-					dcmLift.setTargetPos(-200000);
+					dcmLift.setTargetPos(-400000);
 					System.out.println("Case 3 // Lift package");
-					state = 5;					
+					state = 5;
+					truevariable = true;
 				}
 				
 				if (!useWifi) {
@@ -386,16 +430,17 @@ public class RealMain extends Task
 			case 7:		//******************************************************Case 7 deploy*************************************************************************
 				System.out.println("Case 6	//deploy");
 				counterCase7++;
+				
 				if(useWifi) {
 					wifiState = 316;	
 					wifi.cmd.writeCmd(wifiState);
 				}
 				
-				if (counterCase7 >= 20) {		
+				if (counterCase7 >= 28) {		
 					state = 8;
 				}else if (counterCase7 >= 24) {
 					dcmDrive.setTargetPos(800000);
-					ServoAngle.setPosition(10);	//work Pos//10
+					ServoAngle.setPosition(8);	//work Pos//10
 				}else if (counterCase7 >= 20) {
 					ServoGripper.setPosition(45);//Open wide
 				}else if (counterCase7 >= 16) {
@@ -420,6 +465,54 @@ public class RealMain extends Task
 			case 9:		//******************************************************Case 9 counter*************************************************************************
 				counter++;
 				state = 1;
+			break;
+			
+			case 11:
+				System.out.println("Case 11 // Nachdrücken");
+				System.out.print("RealposLift= : ");
+				System.out.println(dcmLift.getActualPos());
+				
+				
+				time = System.currentTimeMillis();
+				
+				if (dcmLift.getActualPos() < -2690000) {
+					if (truevariable == true ) {
+						setTimeStamp = time;
+						truevariable = false;
+					}
+					ServoGripper.setPosition(6);	// Close Gripper
+					System.out.println("Case 11 // Close Gripper");
+					
+					if (time >= setTimeStamp + 200000) {
+						dcmLift.setTargetPos(-2300000);
+						System.out.println("Case 11 // Nachdrücken");
+					}
+
+				}
+				
+				
+				if (dcmLift.getActualPos() > -2305000 && dcmLift.getActualPos() < - 2295000 && time >= setTimeStamp + 1700000) {
+
+					ServoGripper.setPosition(30);	// Open Gripper
+					System.out.println("Case 11 // Open Gripper");
+					
+					dcmLift.setZeroSwitch();
+					System.out.println("Case 3 // Lower grabbing position");
+					
+				}
+				
+				if (dcmLift.getActualPos() < 1000 && dcmLift.getActualPos() > -1000)  { // && time >= timestamp + 1000000{
+					ServoGripper.setPosition(6);	// Close Gripper
+					System.out.println("Case 3 // Close Gripper");
+					ServoGuide.setPosition(66);	//deploy	//Close Cube Guide
+					
+					dcmLift.setTargetPos(-400000);
+					System.out.println("Case 3 // Lift package");
+					state = 5;
+					truevariable = true;
+				}
+				
+				
 			break;
 			
 			}

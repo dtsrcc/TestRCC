@@ -46,7 +46,11 @@ public class DCMotorEncoderDrive extends Task
 	public static short posOfset = 0;
 	public static long realpos;
 	public static long actualpos = 0;
-
+	
+	long time;
+	long setTimeStamp = 0;
+	
+	public boolean truevariable = true;
 	
 	public DCMotorEncoderDrive()	// Switch 9; TPU 6, PWM 8 9
 	{
@@ -57,6 +61,7 @@ public class DCMotorEncoderDrive extends Task
 		switchAvailable = true;
 		speed = 0;
 		realpos = 0;
+		time = System.currentTimeMillis();
 	}
 	
 	//********************************************************************************************************************************************//
@@ -105,20 +110,81 @@ public class DCMotorEncoderDrive extends Task
             break;
             
         case 2:  
+        	time = System.currentTimeMillis();
+        	
+        	if (truevariable == true ) {
+				setTimeStamp = time;
+				truevariable = false;
+			}
+        	
         	if ((targetPos+100)<realpos) {
+        		
         		speed = -8;
+        		
         	}else if ((targetPos-100)>realpos) {
-        		speed = 8;
+        		
+            	if(time >= setTimeStamp + 500000) {
+            		speed = 1;
+            	}
+            	
+            	if(time >= setTimeStamp + 1000000) {
+            		speed = 2;
+            	}
+            	
+            	if(time >= setTimeStamp + 1500000) {
+            		speed = 4;
+            	}
+            	
+            	if(time >= setTimeStamp + 2000000) {
+            		speed = 6;
+            	}
+            	
+            	if(time >= setTimeStamp + 2500000) {
+            		speed = 8;
+            	}
+        		
+        		//speed = 8;
+        		
         	}else {
         		speed = 0;
         		state = 5;
+        		truevariable = true;
         	}
             break;
             
         case 3:
-        	speed = -8; // Drehrichtung beachten
-    		zeroingWithSwitch = true;
-    		state = 5;
+        	
+        	time = System.currentTimeMillis();
+        	
+        	if (truevariable == true ) {
+				setTimeStamp = time;
+				truevariable = false;
+			}
+        	
+        	if(time >= setTimeStamp + 500000) {
+        		speed = -1;
+        	}
+        	
+        	if(time >= setTimeStamp + 1000000) {
+        		speed = -2;
+        	}
+        	
+        	if(time >= setTimeStamp + 1500000) {
+        		speed = -4;
+        	}
+        	
+        	if(time >= setTimeStamp + 2000000) {
+        		speed = -6;
+        	}
+        	
+        	if(time >= setTimeStamp + 2500000) {
+        		speed = -8; // Drehrichtung beachten
+        		zeroingWithSwitch = true;
+        		state = 5;
+        		truevariable = true;
+        	}
+        	
+    		
         	break;        	
         }
 		

@@ -85,6 +85,7 @@ public class RealMain extends Task
 	public boolean haveTime = true;
 	public boolean noMoreBricks = false;
 	public boolean countDown = false;
+	public boolean towerBeacon = false;
 	
 	public RealMain() throws Exception{
 		time = System.currentTimeMillis();
@@ -266,7 +267,18 @@ public class RealMain extends Task
 				if(case3 == false) {
 					case3 = true;
 					System.out.println("Case 3	// Drive forward");
-					ServoGuide.setPosition(-13);	//Working Pos
+					
+					if(towerBeacon == false) {
+						System.out.println("angle -13");
+						ServoGuide.setPosition(-13);	//Working Pos
+						towerBeacon = true;
+					}
+					
+					if(towerBeacon == true && counter > 1) {
+						System.out.println("angle 10");
+						ServoGuide.setPosition(10);	//Working Pos
+					}
+					
 					dcmDrive.setZeroSwitch();
 					if(useWifi) {
 						wifiState = 311;	
@@ -274,6 +286,7 @@ public class RealMain extends Task
 				}
 				
 				if (useWifi && dcmDrive.getSwitchDrive() == true) {
+					System.out.println("next state");
 					state = 4;
 				}
 				
@@ -305,7 +318,7 @@ public class RealMain extends Task
 				case3 = false;
 				
 				if (counter == 1) {
-					ServoGripper.setPosition(7);	// Close Gripper 
+					ServoGripper.setPosition(6);	// Close Gripper 
 					System.out.println("Case 4 // Close Gripper");
 					if (truevariable) {
 						setTimeStamp = time;
@@ -321,7 +334,7 @@ public class RealMain extends Task
 					}
 					
 				} else if (counter == 2 && dcmLift.getActualPos() < -1250000 ) {
-					dcmLift.setTargetPos(-600000); // 
+					dcmLift.setTargetPos(-400000); // 
 					System.out.println("Case 4 // Stacking with beacon");
 					if (truevariable) {
 						setTimeStamp = time;
@@ -337,12 +350,11 @@ public class RealMain extends Task
 						setTimeStamp = time;
 						truevariable = false;
 					}
-					
-					}
+				}
 		
 				
 				
-				if ((dcmLift.getActualPos() > -605000) && (dcmLift.getActualPos() < - 595000) && (time >= setTimeStamp + 2000000)) {
+				if ((dcmLift.getActualPos() > -405000) && (dcmLift.getActualPos() < - 395000) && (time >= setTimeStamp + 2000000)) {
 					ServoGripper.setPosition(30);	// Open Gripper
 					System.out.println("Case 4 // Open Gripper");
 						
@@ -399,7 +411,7 @@ public class RealMain extends Task
 				}
 				alreadyTookBeacon = true;
 				System.out.println("Case 5	//drive bwd");
-				dcmDrive.setTargetPos(600000);
+				dcmDrive.setTargetPos(900000);
 				
 				if (truevariable) {
 					setTimeStamp = time;
@@ -412,7 +424,7 @@ public class RealMain extends Task
 				
 				wifiState = 313;
 				
-				if (dcmDrive.getActualPos() < 602000 && dcmDrive.getActualPos() > 598000) {
+				if (dcmDrive.getActualPos() < 902000 && dcmDrive.getActualPos() > 898000) {
 					state = 6;
 					truevariable = true;
 				}
@@ -448,7 +460,7 @@ public class RealMain extends Task
 					}
 					
 					if(haveTime == false) {
-						dcmDrive.setTargetPos(800000);
+						dcmDrive.setTargetPos(1000000);
 						state = 7;
 					}
 					
@@ -468,7 +480,7 @@ public class RealMain extends Task
 					wifi.cmd.writeCmd(wifiState);
 				}
 				
-				if(noMoreBricks == true && dcmDrive.getActualPos() >= 805000 && dcmDrive.getActualPos() <= 795000) { // error message from partner robot
+				if(noMoreBricks == true && dcmDrive.getActualPos() > 1005000 && dcmDrive.getActualPos() < 995000) { // error message from partner robot
 					
 					dcmLift.setTargetPos(-100000);
 					System.out.println(dcmLift.getActualPos());
@@ -497,7 +509,7 @@ public class RealMain extends Task
 				
 				
 				
-				if(noMoreBricks == false && haveTime == false && dcmDrive.getActualPos() >= 805000 && dcmDrive.getActualPos() <= 795000) { // time is over
+				if(noMoreBricks == false && haveTime == false && dcmDrive.getActualPos() < 805000 && dcmDrive.getActualPos() >795000) { // time is over
 					
 					dcmLift.setTargetPos(-2610000);
 					System.out.println(dcmLift.getActualPos());
@@ -570,7 +582,7 @@ public class RealMain extends Task
 					
 				}
 
-				if (dcmLift.getActualPos() > -2405000 && dcmLift.getActualPos() < - 295000 && time >= setTimeStamp + 3000000) {
+				if (dcmLift.getActualPos() > -2405000 && dcmLift.getActualPos() < - 2395000 && time >= setTimeStamp + 3000000) {
 
 					ServoGripper.setPosition(30);	// Open Gripper
 					System.out.println("Case 11 // Open Gripper");
@@ -587,7 +599,7 @@ public class RealMain extends Task
 				
 				if (dcmLift.getActualPos() < 1000 && dcmLift.getActualPos() > -1000)  { // && time >= timestamp + 1000000{
 					
-					ServoGripper.setPosition(6);	// Close Gripper
+					ServoGripper.setPosition(7);	// Close Gripper
 					System.out.println("Case 11 // Close Gripper");
 					//ServoGuide.setPosition(66);	//deploy	//Close Cube Guide
 					

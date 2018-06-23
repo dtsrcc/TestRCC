@@ -124,23 +124,23 @@ public class DCMotorEncoderDrive extends Task
         	}else if ((targetPos-100)>realpos) {
         		
             	if(time >= setTimeStamp + 500000) {
-            		speed = 1;
-            	}
-            	
-            	if(time >= setTimeStamp + 1000000) {
             		speed = 2;
             	}
             	
-            	if(time >= setTimeStamp + 1500000) {
+            	if(time >= setTimeStamp + 1000000) {
             		speed = 4;
             	}
             	
-            	if(time >= setTimeStamp + 2000000) {
+            	if(time >= setTimeStamp + 1500000) {
             		speed = 6;
             	}
             	
-            	if(time >= setTimeStamp + 2500000) {
+            	if(time >= setTimeStamp + 2000000) {
             		speed = 8;
+            	}
+            	
+            	if(time >= setTimeStamp + 2500000) {
+            		speed = 10;
             	}
         		
         		//speed = 8;
@@ -162,23 +162,23 @@ public class DCMotorEncoderDrive extends Task
 			}
         	
         	if(time >= setTimeStamp + 500000) {
-        		speed = -1;
-        	}
-        	
-        	if(time >= setTimeStamp + 1000000) {
         		speed = -2;
         	}
         	
-        	if(time >= setTimeStamp + 1500000) {
+        	if(time >= setTimeStamp + 1000000) {
         		speed = -4;
         	}
         	
-        	if(time >= setTimeStamp + 2000000) {
+        	if(time >= setTimeStamp + 1500000) {
         		speed = -6;
         	}
         	
+        	if(time >= setTimeStamp + 2000000) {
+        		speed = -8;
+        	}
+        	
         	if(time >= setTimeStamp + 2500000) {
-        		speed = -8; // Drehrichtung beachten
+        		speed = -10; // Drehrichtung beachten
         		zeroingWithSwitch = true;
         		state = 5;
         		truevariable = true;

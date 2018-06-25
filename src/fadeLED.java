@@ -11,8 +11,8 @@ public class fadeLED extends Task{
 	boolean dir = true;
 	
 	public fadeLED() {
-		pwm1 = new TPU_PWM(false, 1, 10000000 / TPU_PWM.tpuTimeBase, 0);
-		pwm2 = new TPU_PWM(false, 2, 10000000 / TPU_PWM.tpuTimeBase, 0);
+		pwm1 = new TPU_PWM(true, 6, 10000000 / TPU_PWM.tpuTimeBase, 0);
+		pwm2 = new TPU_PWM(true, 7, 10000000 / TPU_PWM.tpuTimeBase, 0);
 	}
 	
 	public void action() {

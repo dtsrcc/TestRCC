@@ -446,12 +446,12 @@ public class RealMain extends Task
 				}
 				
 				if(time >= setTimeStamp +2000000) {
-					ServoGuide.setPosition(50);
+					ServoGuide.setPosition(66);
 				}
 				
 				wifiState = 313;
 				
-				if (dcmDrive.getActualPos() < 902000 && dcmDrive.getActualPos() > 898000) {
+				if (dcmDrive.getActualPos() < 802000 && dcmDrive.getActualPos() > 798000) {
 					state = 6;
 					truevariable = true;
 				}
@@ -508,19 +508,19 @@ public class RealMain extends Task
 					wifi.cmd.writeCmd(wifiState);
 				}
 
-				if(noMoreBricks == true && dcmDrive.getActualPos() < 1020000 && dcmDrive.getActualPos() >980000) { // time is over
+				if(noMoreBricks == true && dcmDrive.getActualPos() < 820000 && dcmDrive.getActualPos() > 780000) { // time is over
 					
-					dcmLift.setTargetPos(-2630000);
+					dcmLift.setTargetPos(-2650000);
 					System.out.println(dcmLift.getActualPos());
 					
-					if(dcmLift.getActualPos() >= -2630000 && dcmLift.getActualPos() <= -2590000) {
+					if(dcmLift.getActualPos() >= -2640000 && dcmLift.getActualPos() <= -2510000) {
 						
 						counterCase7++;
 						
 						if (counterCase7 >= 28) {		
 							state = 8;
 						}else if (counterCase7 >= 24) {
-							dcmDrive.setTargetPos(1600000);
+							dcmDrive.setTargetPos(1000000);
 							// ServoAngle.setPosition(8);	//work Pos//10
 						}else if (counterCase7 >= 20) {
 							ServoGripper.setPosition(60);//Open wide
@@ -606,14 +606,14 @@ public class RealMain extends Task
 					System.out.println("Case 11 // Close Gripper");
 					
 					if (time >= setTimeStamp + 200000) {
-						dcmLift.setTargetPos(-2600000);
+						dcmLift.setTargetPos(-2550000);
 						System.out.println("Case 11 // Nachdrücken");
 						stateInCase = 4;
 					}
 					
 				}
 
-				if (stateInCase == 4 && dcmLift.getActualPos() > -2800000 && dcmLift.getActualPos() < - 2200000 && time >= setTimeStamp + 4000000) {
+				if (stateInCase == 4 && dcmLift.getActualPos() > -2800000 && dcmLift.getActualPos() < - 2200000 && time >= setTimeStamp + 3500000) {
 
 					ServoGripper.setPosition(angleOpen);	// Open Gripper
 					System.out.println("Case 11 // Open Gripper");
@@ -629,6 +629,13 @@ public class RealMain extends Task
 							dcmLift.setTargetPos(-2500000);
 							noMoreBricks = true;
 							stateInCase = 5;
+							truevariable = true;
+							
+							if (truevariable == true ) {
+								setTimeStamp = time;
+								truevariable = false;
+							}
+							
 						}
 					
 				}
@@ -646,13 +653,20 @@ public class RealMain extends Task
 					stateInCase = 5;
 				}
 				
-				if(stateInCase == 5 && dcmLift.getActualPos() > -2510000 && dcmLift.getActualPos() < - 2490000 && noMoreBricks == true) {
+				if(stateInCase == 5 && dcmLift.getActualPos() > -2900000 && dcmLift.getActualPos() < - 2490000 && noMoreBricks == true && time >= setTimeStamp + 1000000) {
 					
-					System.out.println("Case 11 // higher grabbing position");
-					ServoGripper.setPosition(angleClose);
-					dcmLift.setTargetPos(-2800000);
-					state = 5;
-					truevariable = true;
+					
+					if (time >= setTimeStamp + 1000000) {
+						ServoGripper.setPosition(angleClose);
+						
+						
+						if (time >= setTimeStamp + 1500000) {
+							dcmLift.setTargetPos(-2800000);
+							System.out.println("Case 11 // higher grabbing position");
+							state = 5;
+							truevariable = true;
+						}
+					}
 				}
 				
 				

@@ -23,6 +23,6 @@ project Testing {
 #	rootclasses = "wifi.WifiReceiver";
 #	rootclasses = "wifi.WifiDemo";
 #	rootclasses = "Sensors.LimitSwitch";
-#	rootclasses = "flashDelete";
-
+#	rootclasses = "delete";
+#	rootclasses = "Motors.ServoMotorTest";
 }

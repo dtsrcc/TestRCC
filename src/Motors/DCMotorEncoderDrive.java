@@ -9,6 +9,7 @@ import ch.ntb.inf.deep.runtime.mpc555.driver.TPU_FQD;
 public class DCMotorEncoderDrive extends Task
 {
 	private static final boolean TPU_A = true;
+	private static final boolean TPU_B = true;
 	
 	//public int i=0;
 
@@ -56,6 +57,7 @@ public class DCMotorEncoderDrive extends Task
 	public DCMotorEncoderDrive()	// Switch 9; TPU 6, PWM 8 9
 	{
 		speedcon = new SpeedController4DCMotor(ts, 8, 9, TPU_A, 6, TPU_A, ticksPerRotation, motorVoltage, gearRatio, kp, tn);
+		// speedcon = new SpeedController4DCMotor(ts, 1, 3, TPU_B, 8, TPU_A, ticksPerRotation, motorVoltage, gearRatio, kp, tn);
 		switchLimit = new LimitSwitchold(10);
 		sensor = new IRSensor();
 		fqd = new TPU_FQD(true, 6);

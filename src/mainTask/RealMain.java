@@ -56,8 +56,6 @@ public class RealMain extends Task
 	
 	private RN131 wifi;	
 	
-	int timeCounter = 0;
-	
 	LimitSwitchold switchWhite;
 	LimitSwitchold switchRed;
 	
@@ -72,7 +70,6 @@ public class RealMain extends Task
 	
 	int state = 0;
 	int wifiState = 0;
-	int message = 0;
 	
 	long pos=0;
 	
@@ -82,10 +79,11 @@ public class RealMain extends Task
 	public boolean truevariable = true;
 	public int counter = 0;
 	public int counterCase7 = 0;
-	public boolean haveTime = true;
 	public boolean noMoreBricks = false;
 	public boolean countDown = false;
 	public boolean towerBeacon = false;
+	
+	public int cmd;
 	
 	public RealMain() throws Exception{
 		time = System.currentTimeMillis();
@@ -99,7 +97,7 @@ public class RealMain extends Task
 		switchRed = new LimitSwitchold(7);
 		
 		ServoGripper = new ServoMotor(3, 5, 6, 81);	// Pin, DefaultPos, MinPos, MaxPos
-		ServoGuide = new ServoMotor(1,-10, -20, 66);	// Pin, DefaultPos, MinPos, MaxPos
+		ServoGuide = new ServoMotor(1,-10, -30, 66);	// Pin, DefaultPos, MinPos, MaxPos
 		ServoAngle = new ServoMotor(0, 15, 7, 30);
 		
 		dcmLift = new DCMotorEncoderLift();  // Pins for testboard
@@ -122,6 +120,7 @@ public class RealMain extends Task
 	if((switchRed.getSwitchInputs() == true) && (switch1State == false)) {
 		useWifi = true;
 		switch1State = true;
+		
 	}else if ((switchWhite.getSwitchInputs() == true) && (switch1State == false)) {
 		useWifi = false;
 		switch1State = true;
@@ -132,9 +131,15 @@ public class RealMain extends Task
 	
 	if(switch1State == true) {
 		
-		if (useWifi && countDown == true) {
-			timeCounter++;
-			System.out.println("time");
+		if (useWifi) {
+			cmd = -1;
+			if (wifi.connected()) {
+	              CmdInt.Type type = wifi.cmd.readCmd();
+	              if (type == CmdInt.Type.Cmd) {
+	                   cmd = wifi.cmd.getInt();
+	              }
+	         }
+
 		}
 					
 		switch (state) {
@@ -147,7 +152,7 @@ public class RealMain extends Task
 					wifiState = 310;
 					System.out.println("Case 0	//Init");
 					
-					ServoGuide.setPosition(-13);	//Working Pos
+					ServoGuide.setPosition(-27);	//Working Pos
 					System.out.println("// Open Cube Guide");
 					
 					dcmLift.setZeroSwitch();
@@ -156,7 +161,7 @@ public class RealMain extends Task
 					ServoAngle.setPosition(8);	//Working Pos.
 					System.out.println("// AngleServo to working Pos");
 					
-					ServoGripper.setPosition(30);	//Open
+					ServoGripper.setPosition(20);	//Open
 					System.out.println("// Open Gripper");
 					
 				}
@@ -172,18 +177,17 @@ public class RealMain extends Task
 					if(useWifi) {
 						wifi.cmd.writeCmd(400);
 					}
-					CmdInt.Type type = wifi.cmd.readCmd();
-					if (type == CmdInt.Type.Cmd) {
-						message = wifi.cmd.getInt();
-						System.out.println(message);
-						if (message == 800) {
+
+
+						System.out.println(cmd);
+						if (cmd == 800) {
 							countDown = true;
 							state = 9;	
 						} else {
-							System.out.println("error Case 1");
+							//System.out.println("error Case 1");
 						}
 		
-					}
+					
 				}
 				
 			break;
@@ -199,16 +203,19 @@ public class RealMain extends Task
 				if (counter == 1) {
 					dcmLift.setTargetPos(0); 
 					System.out.println("Case 1	//Set Gripper Height Towertop");
+					state = 3;
 				} else if (counter == 2){
 					dcmLift.setTargetPos(-1300000); // WERT NOCH ANPASSEN FÜR GENAUE HÖHE DER STACKING POSITION
 					System.out.println("Case 1	//Set Gripper Height First Position with Beacon");
+					state = 2;
 					// 18.5mm differenz von oberen zu unterem Stein 
 				} else if (counter >= 3) {
 					dcmLift.setTargetPos(-2700000); // WERT NOCH ANPASSEN FÜR GENAUE HÖHE DER STACKING POSITION
 					System.out.println("Case 1	//Set Gripper Height Second Position");
+					state = 2;
 				}
 				
-				state = 2;	
+					
 			break;
 		
 			
@@ -235,11 +242,10 @@ public class RealMain extends Task
 					if(useWifi) {
 						wifi.cmd.writeCmd(300);
 					}
-					CmdInt.Type type = wifi.cmd.readCmd();
-					if (type == CmdInt.Type.Cmd) {
-						message = wifi.cmd.getInt();
-						System.out.println(message);
-						if (message == 316) {
+
+
+						System.out.println(cmd);
+						if (cmd == 316) {
 							state = 3;	
 							
 						} else {
@@ -248,13 +254,12 @@ public class RealMain extends Task
 							state = 2;
 						}
 						
-						if(message == 318) {
-							dcmDrive.setTargetPos(800000);
-							state = 7;
+						if(cmd == 318) {
+							state = 3;
 							noMoreBricks = true;
 						}
 		
-					}
+					
 					
 					
 				}
@@ -270,7 +275,7 @@ public class RealMain extends Task
 					
 					if(towerBeacon == false) {
 						System.out.println("angle -13");
-						ServoGuide.setPosition(-13);	//Working Pos
+						ServoGuide.setPosition(-14);	//Working Pos
 						towerBeacon = true;
 					}
 					
@@ -334,7 +339,7 @@ public class RealMain extends Task
 					}
 					
 				} else if (counter == 2 && dcmLift.getActualPos() < -1250000 ) {
-					dcmLift.setTargetPos(-400000); // 
+					dcmLift.setTargetPos(-500000); // 
 					System.out.println("Case 4 // Stacking with beacon");
 					if (truevariable) {
 						setTimeStamp = time;
@@ -354,7 +359,7 @@ public class RealMain extends Task
 		
 				
 				
-				if ((dcmLift.getActualPos() > -405000) && (dcmLift.getActualPos() < - 395000) && (time >= setTimeStamp + 2000000)) {
+				if ((dcmLift.getActualPos() > -505000) && (dcmLift.getActualPos() < - 485000) && (time >= setTimeStamp + 2000000)) {
 					ServoGripper.setPosition(30);	// Open Gripper
 					System.out.println("Case 4 // Open Gripper");
 						
@@ -419,7 +424,7 @@ public class RealMain extends Task
 				}
 				
 				if(time >= setTimeStamp +2000000) {
-					ServoGuide.setPosition(66);
+					ServoGuide.setPosition(50);
 				}
 				
 				wifiState = 313;
@@ -455,11 +460,11 @@ public class RealMain extends Task
 				}
 				
 				if (true) {
-					if(haveTime == true) {// *4 depends on t.period // && timeCounter <= (100*4)
+					if(noMoreBricks == false) {// *4 depends on t.period // && timeCounter <= (100*4)
 						state = 9;
 					}
 					
-					if(haveTime == false) {
+					if(noMoreBricks == true) {
 						dcmDrive.setTargetPos(1000000);
 						state = 7;
 					}
@@ -474,42 +479,14 @@ public class RealMain extends Task
 			case 7:		//******************************************************Case 7 deploy*************************************************************************
 				System.out.println("Case 7	//deploy");
 				System.out.println(dcmDrive.getActualPos());
+				System.out.println(dcmLift.getActualPos());
 				
 				if(useWifi) {
 					wifiState = 316;	
 					wifi.cmd.writeCmd(wifiState);
 				}
-				
-				if(noMoreBricks == true && dcmDrive.getActualPos() > 1005000 && dcmDrive.getActualPos() < 995000) { // error message from partner robot
-					
-					dcmLift.setTargetPos(-100000);
-					System.out.println(dcmLift.getActualPos());
-					//noMoreBricks = false;
-					
-					if(dcmLift.getActualPos() >= -105000 && dcmLift.getActualPos() <= -95000) {
-						
-						counterCase7++;
-						
-						if (counterCase7 >= 28) {		
-							state = 8;
-						}else if (counterCase7 >= 24) {
-							dcmDrive.setTargetPos(800000);
-							ServoAngle.setPosition(8);	//work Pos//10
-						}else if (counterCase7 >= 20) {
-							ServoGripper.setPosition(45);//Open wide
-						}else if (counterCase7 >= 16) {
-							ServoGripper.setPosition(15);	//Open small
-						}else if (counterCase7 >= 4) {
-							ServoAngle.setPosition(7 + counterCase7);	//deploy pos//26
-						}else{
-							ServoGuide.setPosition(66);	//deploy	//Close Cube Guide
-						}
-					}
-				}
-				
-				
-				
-				if(noMoreBricks == false && haveTime == false && dcmDrive.getActualPos() < 805000 && dcmDrive.getActualPos() >795000) { // time is over
+
+				if(noMoreBricks == true && dcmDrive.getActualPos() < 1005000 && dcmDrive.getActualPos() >995000) { // time is over
 					
 					dcmLift.setTargetPos(-2610000);
 					System.out.println(dcmLift.getActualPos());
@@ -530,7 +507,8 @@ public class RealMain extends Task
 						}else if (counterCase7 >= 4) {
 							ServoAngle.setPosition(7 + counterCase7);	//deploy pos//26
 						}else{
-							ServoGuide.setPosition(66);	//deploy	//Close Cube Guide
+							ServoGuide.setPosition(50);	//deploy	//Close Cube Guide
+							
 						}
 					}
 				}
@@ -542,7 +520,7 @@ public class RealMain extends Task
 			case 8:		//******************************************************Case 8 finish*************************************************************************  
 				System.out.println("Case 8	//Finish");
 				if(useWifi) {
-					wifiState = 801;	// finish signal is 801/802!!!
+					wifiState = 802;	// finish signal is 801/802!!! 802 LED begin to lightrotation
 					wifi.cmd.writeCmd(wifiState);
 				}
 
@@ -570,7 +548,7 @@ public class RealMain extends Task
 					truevariable = false;
 				}
 				
-				if (dcmLift.getActualPos() < -2800000 && time >= setTimeStamp + 1000000) {
+				if (dcmLift.getActualPos() < -2700000 && time >= setTimeStamp + 1000000) {
 					
 					ServoGripper.setPosition(7);	// Close Gripper
 					System.out.println("Case 11 // Close Gripper");
@@ -587,12 +565,14 @@ public class RealMain extends Task
 					ServoGripper.setPosition(30);	// Open Gripper
 					System.out.println("Case 11 // Open Gripper");
 					
-						if(timeCounter <= (100*4)) {// *4 depends on t.period
+						if(noMoreBricks == false) {
 							dcmLift.setZeroSwitch();
 							System.out.println("Case 11 // Lower grabbing position");
-						}else {
+						}
+						
+						if(noMoreBricks == true) {
 							dcmLift.setTargetPos(-2500000);
-							haveTime = false;
+							noMoreBricks = true;
 						}
 					
 				}
@@ -609,7 +589,7 @@ public class RealMain extends Task
 					truevariable = true;
 				}
 				
-				if(dcmLift.getActualPos() > -2505000 && dcmLift.getActualPos() < - 2495000 && haveTime == false) {
+				if(dcmLift.getActualPos() > -2505000 && dcmLift.getActualPos() < - 2495000 && noMoreBricks == true) {
 					
 					System.out.println("Case 11 // higher grabbing position");
 					ServoGripper.setPosition(6);

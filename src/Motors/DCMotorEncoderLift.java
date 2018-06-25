@@ -119,7 +119,7 @@ public class DCMotorEncoderLift extends Task
 	        	}
 	            break;  
 	        case 3:
-	        	speed = 15; // Drehrichtung beachten
+	        	speed = 25; // Drehrichtung beachten
 	        	atTarget = false;
 	    		zeroingWithSwitch = true;
 	    		state = 5;

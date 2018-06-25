@@ -31,6 +31,7 @@ public class DCMotorEncoderDrive extends Task
 	public static IRSensor sensor;
 
 	public static int state = 1;
+	public static boolean firstTime = true;
 	
 	public TPU_FQD fqd;
 	
@@ -103,9 +104,17 @@ public class DCMotorEncoderDrive extends Task
         switch (state) {
         
         case 1:
+        	/*if (firstTime == true) {
+        		overflow = 0;
+            	posOfset =  fqd.getPosition();
+            	realpos = overflow * 32767 * 2 + fqd.getPosition() - posOfset;
+            	firstTime = false;
+        	}
+        	*/
         	overflow = 0;
         	posOfset =  fqd.getPosition();
         	realpos = overflow * 32767 * 2 + fqd.getPosition() - posOfset;
+        	
         	state = 5;
             break;
             
@@ -227,6 +236,14 @@ public class DCMotorEncoderDrive extends Task
 	
 	public boolean getSwitchDrive(){
 		return switchLimit.getSwitchInputs();
+	}
+	
+	public void setVariabletrue() {
+		switchIsEnabled = true;
+	}
+	
+	public void setVariablefalse() {
+		switchIsEnabled = false;
 	}
 	
 	//********************************************************************************************************************************************//

@@ -44,7 +44,7 @@ import ch.ntb.inf.deep.runtime.util.CmdInt;
 import ch.ntb.inf.deep.runtime.mpc555.driver.MPIOSM_DIO;
 import ch.ntb.inf.deep.runtime.mpc555.driver.RN131;
 
-public class RealMain extends Task
+public class RealMain3 extends Task
 {
 	long time;
 	long setTimeStamp = 0;
@@ -89,7 +89,7 @@ public class RealMain extends Task
 	
 	public int cmd;
 	
-	public RealMain() throws Exception{
+	public RealMain3() throws Exception{
 		time = System.currentTimeMillis();
 		
 		switch1State = false;
@@ -363,7 +363,7 @@ public class RealMain extends Task
 				} else if (counter >= 4 && dcmLift.getActualPos() < -2800000) {
 					dcmLift.setTargetPos(-2700000); // 
 					//System.out.println("Case 4 // Stacking with last package");
-					stateInCase = 3;
+					stateInCase = 9;
 					
 				}
 		
@@ -404,7 +404,7 @@ public class RealMain extends Task
 					
 				}
 					
-					if (stateInCase == 3 && dcmLift.getActualPos() > -4000000 && dcmLift.getActualPos() < - 1000000 && time >= setTimeStamp + 2000000)  {
+					if (stateInCase == 9 && dcmLift.getActualPos() > -4000000 && dcmLift.getActualPos() < - 1000000 && time >= setTimeStamp + 2000000)  {
 						
 						dcmLift.setTargetPos(-2800000);
 						
@@ -426,7 +426,7 @@ public class RealMain extends Task
 //					System.out.println("Case 3 // Lower grabbing position");
 				}
 				
-				if (stateInCase == 3 && dcmLift.getActualPos() < 2000 && dcmLift.getActualPos() > -2000)  { // && time >= timestamp + 1000000{
+				if (stateInCase == 3 && dcmLift.getActualPos() < 2000 && dcmLift.getActualPos() > -2000 && dcmDrive.getSwitchDrive() == true)  { // && time >= timestamp + 1000000{
 					ServoGripper.setPosition(angleClose);	// Close Gripper
 					//System.out.println("Case 4 // Close Gripper");
 					//ServoGuide.setPosition(66);	//deploy	//Close Cube Guide
@@ -532,13 +532,13 @@ public class RealMain extends Task
 
 				counterCase7++;
 						
-				if (counterCase7 >= 36) {		
+				if (counterCase7 >= 38) {		
 					state = 8;
 				}else if (counterCase7 >= 35) {
 					ServoGripper.setPosition(60); //Open wide
 				}else if (counterCase7 >= 30) {
 					ServoGripper.setPosition(38);	//Open small
-				}else if (counterCase7 == 20) {
+				}else if (counterCase7 == 25) {
 					// dcmDrive.setTargetPos(1000000);
 					dcmLift.setTargetPos(-2600000);
 					// ServoAngle.setPosition(8);	//work Pos//10
@@ -571,7 +571,92 @@ public class RealMain extends Task
 			break;
 			
 			case 10:
+				time = System.currentTimeMillis();	
 				
+				ServoGripper.setPosition(angleClose);	// Close Gripper
+				//System.out.println("Case 10 // Close Gripper");
+				
+				dcmLift.setTargetPos(-3200000);
+				//System.out.println("Case 4 // Lift package");
+			
+				dcmDrive.setTargetPos(-10000);
+				//System.out.println("Case 10 // Move forward to regrab tower");
+				
+				dcmLift.setTargetPos(-2700000);
+				
+				if (truevariable == true ) {
+					setTimeStamp = time;
+					truevariable = false;
+				}
+				
+				if (time >= setTimeStamp + 1000000) {
+					
+					ServoGripper.setPosition(angleOpen);	// Open Gripper
+					//System.out.println("Case 10 // Open Gripper");
+				
+					dcmDrive.setZeroSwitch();
+					//System.out.println("Case 10 // Move forward to zero");
+					
+				}
+					
+				if (stateInCase == 3 && dcmDrive.getActualPos() < 2000 && dcmDrive.getActualPos() > -2000) {
+					state = 11;
+					
+					if(noMoreBricks == false && dcmDrive.getSwitchDrive() == true) {
+						// dcmLift.setZeroSwitch();
+						dcmLift.setTargetPos(-500000);
+						//System.out.println("Case 11 // Lower grabbing position");
+						stateInCase = 3;
+						truevariable = true;
+						if (truevariable == true ) {
+							setTimeStamp = time;
+							truevariable = false;
+						}
+					}
+					
+					if(noMoreBricks == true && dcmDrive.getSwitchDrive() == true) {
+						dcmLift.setTargetPos(-2500000);
+						noMoreBricks = true;
+						stateInCase = 5;
+						truevariable = true;
+						
+						if (truevariable == true ) {
+							setTimeStamp = time;
+							truevariable = false;
+						}
+					}
+					
+				}
+				
+				if (stateInCase == 3 && dcmLift.getActualPos() < -300000 && dcmLift.getActualPos() > -700000 && time >= setTimeStamp + 1000000) {
+					
+					ServoGripper.setPosition(angleClose);	// Close Gripper
+					//System.out.println("Case 11 // Close Gripper");
+					//ServoGuide.setPosition(66);	//deploy	//Close Cube Guide
+					
+					dcmLift.setTargetPos(-800000);
+					//System.out.println("Case 11 // Lift package");
+					state = 5;
+					truevariable = true;
+					stateInCase = 5;
+				}
+				
+				if(stateInCase == 5 && dcmLift.getActualPos() > -2900000 && dcmLift.getActualPos() < - 2300000 && noMoreBricks == true && time >= setTimeStamp + 1000000) {
+					
+					
+					if (time >= setTimeStamp + 1000000) {
+						ServoGripper.setPosition(angleClose);
+						
+						
+						if (time >= setTimeStamp + 1500000) {
+							dcmLift.setTargetPos(-2800000);
+							//System.out.println("Case 11 // higher grabbing position");
+							state = 5;
+							truevariable = true;
+						}
+					}
+				}
+					
 			break;
 			
 			
@@ -613,45 +698,53 @@ public class RealMain extends Task
 					}
 				}
 
-				if (stateInCase == 4 && dcmLift.getActualPos() > -2700000 && dcmLift.getActualPos() < - 2200000 && time >= setTimeStamp + 1000000) {
+				if (stateInCase == 4 && dcmLift.getActualPos() > -2800000 && dcmLift.getActualPos() < - 2200000 && time >= setTimeStamp + 1000000) {
 
 					dcmLift.setTargetPos(-2700000);
 					
 					if (time >= setTimeStamp + 1500000) {
 						ServoGripper.setPosition(angleOpen);	// Open Gripper
 						//System.out.println("Case 11 // Open Gripper");
+						if (dcmDrive.getSwitchDrive() == false) {
+							state = 10;
 							stateInCase = 3;
 							truevariable = true;
-		
+						}
+					}
 					
-					
-						if(noMoreBricks == false && time >= setTimeStamp + 1700000) {
-							// dcmLift.setZeroSwitch();
-							dcmLift.setTargetPos(-500000);
-							//System.out.println("Case 11 // Lower grabbing position");
-							stateInCase = 3;
-							truevariable = true;
-							if (truevariable == true ) {
-								setTimeStamp = time;
-								truevariable = false;
-							}
+					if(noMoreBricks == false && time >= setTimeStamp + 1700000 && dcmDrive.getSwitchDrive() == true) {
+						// dcmLift.setZeroSwitch();
+						dcmLift.setTargetPos(-500000);
+						//System.out.println("Case 11 // Lower grabbing position");
+						stateInCase = 3;
+						truevariable = true;
+						if (truevariable == true ) {
+							setTimeStamp = time;
+							truevariable = false;
+						}
+					}
+						
+					if(noMoreBricks == true && time >= setTimeStamp + 1700000 && dcmDrive.getSwitchDrive() == true) {
+						dcmLift.setTargetPos(-2500000);
+						noMoreBricks = true;
+						stateInCase = 5;
+						truevariable = true;
+						
+						if (truevariable == true ) {
+							setTimeStamp = time;
+							truevariable = false;
 						}
 						
-						if(noMoreBricks == true && time >= setTimeStamp + 1700000) {
-							dcmLift.setTargetPos(-2500000);
-							noMoreBricks = true;
-							stateInCase = 5;
-							truevariable = true;
-							
-							if (truevariable == true ) {
-								setTimeStamp = time;
-								truevariable = false;
-							}
-							
-						}
+					}
+					
+					
 					
 				}
-				}
+					
+					
+	
+					
+				
 				
 				if (stateInCase == 3 && dcmLift.getActualPos() < -300000 && dcmLift.getActualPos() > -700000 && time >= setTimeStamp + 1000000) {
 					
@@ -695,7 +788,7 @@ public class RealMain extends Task
 		System.out = new PrintStream(sci1.out);
 		
 		try{
-			Task t = new RealMain();
+			Task t = new RealMain3();
 			t.period = 250;
 			Task.install(t);
 		}catch(Exception e){
